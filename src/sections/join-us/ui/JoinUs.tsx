@@ -3,5 +3,5 @@ export default function JoinUs() {
     <section className="join-us">
       <div>Join-Us Section</div>
     </section>
-  );
+  )
 }

@@ -3,5 +3,5 @@ export default function MultiTasks() {
     <section className="multi-tasks">
       <div>Multi-Tasks Section</div>
     </section>
-  );
+  )
 }
