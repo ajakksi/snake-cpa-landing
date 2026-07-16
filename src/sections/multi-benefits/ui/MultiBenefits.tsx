@@ -3,5 +3,5 @@ export default function MultiBenefits() {
     <section className="multi-benefits">
       <div>Multi-Benefits Section</div>
     </section>
-  );
+  )
 }

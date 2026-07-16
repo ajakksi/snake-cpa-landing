@@ -1,2 +1,2 @@
 // Join-us section exports
-export { default as JoinUs } from './ui/JoinUs';
+export { default as JoinUs } from './ui/JoinUs'

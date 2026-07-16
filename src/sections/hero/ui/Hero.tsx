@@ -3,5 +3,5 @@ export default function Hero() {
     <section className="hero">
       <div>Hero Section</div>
     </section>
-  );
+  )
 }
