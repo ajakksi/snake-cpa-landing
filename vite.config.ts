@@ -13,7 +13,7 @@ export default defineConfig({
       '@hooks': resolvePath('./src/shared/hooks'),
       '@utils': resolvePath('./src/shared/utils'),
       '@api': resolvePath('./src/shared/api'),
-      '@types': resolvePath('./src/shared/types'),
+      '@app-types': resolvePath('./src/shared/types'),
       '@validation': resolvePath('./src/shared/validation'),
       '@constants': resolvePath('./src/shared/constants'),
       '@i18n': resolvePath('./src/shared/i18n'),
