@@ -15,4 +15,10 @@ const client = axios.create({
   timeout: 45000,
 })
 
+// Request interceptor — add x-api-key to every request
+client.interceptors.request.use((config) => {
+  config.headers['x-api-key'] = apiKey
+  return config
+})
+
 export default client
