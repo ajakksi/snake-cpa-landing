@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { type AxiosRequestConfig } from 'axios'
 import { ApiError } from './errors'
 
 const apiUrl = import.meta.env.VITE_API_URL
@@ -13,26 +13,44 @@ if (!apiKey) {
 
 const client = axios.create({
   baseURL: apiUrl,
-  timeout: 45000, // 45 seconds for cold start
+  timeout: 45000,
 })
 
-// Request interceptor — add x-api-key to every request
 client.interceptors.request.use((config) => {
   config.headers['x-api-key'] = apiKey
   return config
 })
 
-// Response interceptor — normalize errors
+interface RetryableConfig extends AxiosRequestConfig {
+  retryCount?: number
+}
+
+const MAX_RETRIES = 3
+const RETRY_DELAY_MS = 1000
+
 client.interceptors.response.use(
   (response) => response,
-  (error: unknown) => {
-    if (axios.isAxiosError(error)) {
-      throw ApiError.fromAxiosError(error)
+  async (error: unknown) => {
+    if (!axios.isAxiosError(error)) {
+      throw new ApiError(error instanceof Error ? error.message : 'Unknown error', 0, false, false)
     }
-    if (error instanceof Error) {
-      throw new ApiError(error.message, 0, false)
+
+    const apiError = ApiError.fromAxiosError(error)
+    const config = error.config as RetryableConfig | undefined
+
+    if (!apiError.isNetworkError || !config) {
+      throw apiError
     }
-    throw new ApiError('Unknown error', 0, false)
+
+    const retryCount = config.retryCount ?? 0
+    if (retryCount >= MAX_RETRIES) {
+      throw apiError
+    }
+
+    config.retryCount = retryCount + 1
+    await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS))
+
+    return client(config)
   },
 )
 
