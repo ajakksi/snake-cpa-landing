@@ -25,7 +25,7 @@
       "@hooks/*": ["src/shared/hooks/*"],
       "@utils/*": ["src/shared/utils/*"],
       "@api/*": ["src/shared/api/*"],
-      "@types/*": ["src/shared/types/*"],
+      "@app-types/*": ["src/shared/types/*"],
       "@validation/*": ["src/shared/validation/*"],
       "@constants/*": ["src/shared/constants/*"],
       "@i18n/*": ["src/shared/i18n/*"],
