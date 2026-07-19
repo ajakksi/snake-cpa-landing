@@ -9,6 +9,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
+      '@pages': resolvePath('./src/pages'),
       '@components': resolvePath('./src/shared/components'),
       '@hooks': resolvePath('./src/shared/hooks'),
       '@utils': resolvePath('./src/shared/utils'),
