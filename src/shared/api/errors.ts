@@ -28,3 +28,39 @@ export class ApiError extends Error {
     return new ApiError(message, statusCode, isTimeout, isNetworkError)
   }
 }
+
+export const getApiErrorMessage = (error: unknown): string => {
+  if (error instanceof ApiError) {
+    if (error.statusCode === 403) {
+      return 'Forbidden. Invalid or missing API Key.'
+    }
+
+    if (error.statusCode === 405) {
+      return 'Method not allowed.'
+    }
+
+    if (error.statusCode === 500) {
+      return 'Validation error or server error.'
+    }
+
+    if (error.statusCode) {
+      return `Error ${error.statusCode}.`
+    }
+
+    if (error.isTimeout) {
+      return 'The request timed out.'
+    }
+
+    if (error.isNetworkError) {
+      return 'Check your connection.'
+    }
+
+    return 'Something went wrong.'
+  }
+
+  if (error instanceof Error) {
+    return error.message
+  }
+
+  return 'Something went wrong.'
+}
