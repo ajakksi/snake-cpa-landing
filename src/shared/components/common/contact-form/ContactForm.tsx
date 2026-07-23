@@ -1,11 +1,13 @@
 import { useState } from 'react'
+import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { submitContactForm } from '@api/endpoints/contact'
 import { getApiErrorMessage } from '@api/errors'
 import { Button, Input, Select } from '@components/ui'
+import { useTranslation } from 'react-i18next'
 import {
-  contactFormSchema,
+  createContactFormSchema,
   contactMethods,
   type ContactFormValues,
 } from '@validation/contactFormSchema'
@@ -17,6 +19,8 @@ type ContactFormProps = {
 function ContactForm({ onDone }: ContactFormProps) {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [submitError, setSubmitError] = useState('')
+  const { t } = useTranslation(['contactForm', 'common'])
+  const contactFormSchema = useMemo(() => createContactFormSchema(t), [t])
 
   const {
     register,
@@ -60,16 +64,16 @@ function ContactForm({ onDone }: ContactFormProps) {
     return (
       <div className="mx-auto flex w-full flex-col items-center px-4 py-8 text-center text-dark md:py-12">
         <h2 className="text-xl font-bold uppercase leading-[1.1] tracking-tight">
-          We have received your application!
+          {t('contactForm:successTitle')}
         </h2>
 
         <p className="mt-5 text-xl leading-[1.1] font-normal">
-          We will process your request and get in touch with you
+          {t('contactForm:successDescription')}
         </p>
 
         {/* Let the parent close a modal, if the form is rendered inside one. */}
         <Button type="button" onClick={handleDone} className="mt-12">
-          Done
+          {t('common:done')}
         </Button>
       </div>
     )
@@ -84,13 +88,13 @@ function ContactForm({ onDone }: ContactFormProps) {
       noValidate
     >
       <p className="text-sm leading-tight text-dark md:text-sm">
-        Fields with an asterisk (<span className="text-purple">*</span>) are mandatory
+        {t('contactForm:mandatoryFields')}
       </p>
 
       <div className="mt-6 space-y-3">
         <Input
-          label="Your Name"
-          placeholder="Your Name"
+          label={t('contactForm:labels.name')}
+          placeholder={t('contactForm:labels.name')}
           autoComplete="name"
           {...register('name')}
           error={errors.name?.message}
@@ -98,16 +102,16 @@ function ContactForm({ onDone }: ContactFormProps) {
 
         <div className="grid gap-3 md:grid-cols-[0.95fr_1.45fr]">
           <Select
-            label="Contact Method"
-            placeholder="Contact Method *"
+            label={t('contactForm:labels.contactMethod')}
+            placeholder={`${t('contactForm:labels.contactMethod')} *`}
             options={contactMethods}
             {...register('method')}
             error={errors.method?.message}
           />
 
           <Input
-            label="Your Contact"
-            placeholder="Your Contact *"
+            label={t('contactForm:labels.yourContact')}
+            placeholder={`${t('contactForm:labels.yourContact')} *`}
             autoComplete="off"
             {...register('contact')}
             error={errors.contact?.message}
@@ -121,7 +125,7 @@ function ContactForm({ onDone }: ContactFormProps) {
 
       <div className="mt-8 flex justify-center">
         <Button type="submit" className="min-w-[8rem]" disabled={isSubmitting}>
-          Submit
+          {t('common:submit')}
         </Button>
       </div>
     </form>
