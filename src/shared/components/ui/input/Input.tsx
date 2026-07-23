@@ -23,7 +23,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   return (
     <div>
       <label htmlFor={inputId} className="sr-only">
-        {}
+        {label}
       </label>
 
       <input ref={ref} id={inputId} className={classes} aria-invalid={Boolean(error)} {...props} />
