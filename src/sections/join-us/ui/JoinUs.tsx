@@ -1,7 +1,13 @@
-export default function JoinUs() {
+import { Button3D } from '@components/ui'
+
+type JoinUsProps = {
+  onJoinClick: () => void
+}
+
+export default function JoinUs({ onJoinClick }: JoinUsProps) {
   return (
     <section className="join-us">
-      <div>Join-Us Section</div>
+      <Button3D onClick={onJoinClick}>Join us</Button3D>
     </section>
   )
 }
