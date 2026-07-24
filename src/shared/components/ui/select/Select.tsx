@@ -20,7 +20,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select(
 ) {
   const selectId = id ?? props.name ?? label.toLowerCase().replace(/\s+/g, '-')
   const classes = [
-    'w-full min-h-[2.3rem] appearance-none rounded-lg border bg-white px-4 py-2 pr-12 font-sans text-sm leading-none text-dark cursor-pointer outline-none transition-colors duration-200',
+    'w-full min-h-[2.3rem] appearance-none rounded-lg border bg-white px-4 py-2 pr-8 font-sans text-sm leading-none text-dark cursor-pointer outline-none transition-colors duration-200',
     'border-purple/30 focus:border-purple',
     error ? 'border-red-500 focus:border-red-500' : '',
     className,
