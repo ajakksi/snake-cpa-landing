@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react'
 import { ContactForm } from '@components/common'
+import { PageBackground } from '@components/layout'
 import { Modal } from '@components/ui'
 import { Hero } from '@sections/hero'
 import { JoinUs } from '@sections/join-us'
@@ -13,7 +14,9 @@ function Home() {
 
   return (
     <>
-      <main>
+      <PageBackground />
+
+      <main className="relative z-10">
         <Hero />
         <MultiTasks />
         <MultiBenefits />

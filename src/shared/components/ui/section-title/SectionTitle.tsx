@@ -7,7 +7,7 @@ type SectionTitleProps = HTMLAttributes<HTMLHeadingElement> & {
 function SectionTitle({ children, className = '', ...titleProps }: SectionTitleProps) {
   return (
     <h2
-      className={`text-center text-xl font-bold uppercase leading-none text-yellow md:text-right md:text-2xl ${className}`}
+      className={`text-center text-xl font-bold uppercase leading-none text-yellow md:text-right md:text-3xl ${className}`}
       {...titleProps}
     >
       {children}

@@ -1,6 +1,4 @@
 export const getLocalizedPath = (locale: string, path: string): string => {
-  if (locale === 'en') {
-    return path
-  }
-  return `/${locale}${path}`
+  const normalizedLocale = locale.toLowerCase().split('-')[0]
+  return `/${normalizedLocale}${path}`
 }
