@@ -3,6 +3,17 @@ export const en = {
     submit: 'Submit',
     done: 'Done',
   },
+  hero: {
+    title: 'Practice makes profit',
+    description:
+      'We provide effective solutions, tested and refined on our own products and ad budgets',
+    cta: 'Get in touch',
+    nav: {
+      team: 'Team',
+      benefits: 'Benefits',
+      joinUs: 'Join us',
+    },
+  },
   contactForm: {
     mandatoryFields: 'Fields with an asterisk (*) are mandatory',
     successTitle: 'We have received your application!',
