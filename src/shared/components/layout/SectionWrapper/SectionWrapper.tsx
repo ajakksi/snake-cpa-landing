@@ -29,7 +29,7 @@ function SectionWrapper({
     <section id={id} className={sectionClasses}>
       <div className={containerClasses}>
         {eyebrow && (
-          <SectionTitle className="container order-2 mt-auto md:order-1 md:mt-0">
+          <SectionTitle className="container order-2 mt-auto mb-[50px] md:order-1 md:mt-0 md:mb-0">
             {eyebrow}
           </SectionTitle>
         )}
