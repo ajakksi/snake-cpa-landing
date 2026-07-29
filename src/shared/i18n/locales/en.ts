@@ -4,11 +4,16 @@ export const en = {
     done: 'Done',
   },
   hero: {
-    title: 'Practice makes profit',
+    title: {
+      word1: 'Practice',
+      word2: 'makes',
+      word3: 'profit',
+    },
     description:
       'We provide effective solutions, tested and refined on our own products and ad budgets',
     cta: 'Get in touch',
     nav: {
+      hero: 'Main',
       team: 'Team',
       benefits: 'Benefits',
       joinUs: 'Join us',

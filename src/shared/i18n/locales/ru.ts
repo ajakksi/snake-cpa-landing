@@ -4,11 +4,16 @@ export const ru = {
     done: 'Готово',
   },
   hero: {
-    title: 'Practice makes profit',
+    title: {
+      word1: 'Practice',
+      word2: 'makes',
+      word3: 'profit',
+    },
     description:
       'Предлагаем эффективные решения, которые уже протестили на своих продуктах и бюджетах',
     cta: 'Получить профит',
     nav: {
+      hero: 'Главная',
       team: 'Команда',
       benefits: 'Преимущества',
       joinUs: 'С нами',

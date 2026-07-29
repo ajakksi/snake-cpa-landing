@@ -1,12 +1,13 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import svgr from 'vite-plugin-svgr'
 import { fileURLToPath, URL } from 'node:url'
 
 const resolvePath = (path: string) => fileURLToPath(new URL(path, import.meta.url))
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [svgr(), react()],
   resolve: {
     alias: {
       '@pages': resolvePath('./src/pages'),
