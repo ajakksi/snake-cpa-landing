@@ -16,7 +16,7 @@ function SectionWrapper({
   className = '',
   contentClassName = '',
 }: SectionWrapperProps) {
-  const sectionClasses = ['min-h-dvh w-full md:h-dvh', className].filter(Boolean).join(' ')
+  const sectionClasses = ['min-h-dvh w-full md:min-h-dvh', className].filter(Boolean).join(' ')
 
   const containerClasses = [
     'flex min-h-dvh w-full flex-col pt-[20px] pb-8 md:h-full md:min-h-0 md:pt-[3vh]',
@@ -29,7 +29,7 @@ function SectionWrapper({
     <section id={id} className={sectionClasses}>
       <div className={containerClasses}>
         {eyebrow && (
-          <SectionTitle className="container order-2 mt-auto md:order-1 md:mt-0">
+          <SectionTitle className="container order-2 mt-auto mb-[50px] md:order-1 md:mt-0 md:mb-0">
             {eyebrow}
           </SectionTitle>
         )}
