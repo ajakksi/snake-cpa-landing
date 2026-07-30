@@ -3,6 +3,22 @@ export const en = {
     submit: 'Submit',
     done: 'Done',
   },
+  hero: {
+    title: {
+      word1: 'Practice',
+      word2: 'makes',
+      word3: 'profit',
+    },
+    description:
+      'We provide effective solutions, tested and refined on our own products and ad budgets',
+    cta: 'Get in touch',
+    nav: {
+      hero: 'Main',
+      team: 'Team',
+      benefits: 'Benefits',
+      joinUs: 'Join us',
+    },
+  },
   contactForm: {
     mandatoryFields: 'Fields with an asterisk (*) are mandatory',
     successTitle: 'We have received your application!',

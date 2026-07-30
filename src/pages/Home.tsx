@@ -17,7 +17,7 @@ function Home() {
       <PageBackground />
 
       <main className="relative z-10">
-        <Hero />
+        <Hero onJoinClick={openModal} />
         <MultiTasks />
         <MultiBenefits />
         <JoinUs onJoinClick={openModal} />

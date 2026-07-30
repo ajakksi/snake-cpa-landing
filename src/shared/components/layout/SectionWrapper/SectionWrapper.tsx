@@ -19,7 +19,7 @@ function SectionWrapper({
   const sectionClasses = ['min-h-dvh w-full md:h-dvh', className].filter(Boolean).join(' ')
 
   const containerClasses = [
-    'flex min-h-dvh w-full flex-col pb-8 md:h-full md:min-h-0 md:pt-[3vh]',
+    'flex min-h-dvh w-full flex-col pt-[20px] pb-8 md:h-full md:min-h-0 md:pt-[3vh]',
     contentClassName,
   ]
     .filter(Boolean)

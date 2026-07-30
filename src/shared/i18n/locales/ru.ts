@@ -3,6 +3,22 @@ export const ru = {
     submit: 'Отправить',
     done: 'Готово',
   },
+  hero: {
+    title: {
+      word1: 'Practice',
+      word2: 'makes',
+      word3: 'profit',
+    },
+    description:
+      'Предлагаем эффективные решения, которые уже протестили на своих продуктах и бюджетах',
+    cta: 'Получить профит',
+    nav: {
+      hero: 'Главная',
+      team: 'Команда',
+      benefits: 'Преимущества',
+      joinUs: 'С нами',
+    },
+  },
   contactForm: {
     mandatoryFields: 'Поля со звездочкой (*) обязательны',
     successTitle: 'Мы получили вашу заявку!',

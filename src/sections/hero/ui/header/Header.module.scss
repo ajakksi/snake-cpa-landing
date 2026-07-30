@@ -1,0 +1,104 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 110px;
+
+  @media (min-width: 768px) {
+    margin-bottom: 148px;
+  }
+}
+
+.logo {
+  width: 25px;
+  height: 20px;
+
+  @media (min-width: 768px) {
+    width: 45px;
+    height: 40px;
+  }
+}
+
+.desktopNav {
+  display: none;
+  align-items: center;
+  gap: 30px;
+
+  @media (min-width: 768px) {
+    display: flex;
+  }
+}
+
+.nav {
+  display: flex;
+  gap: 30px;
+}
+
+.navLink {
+  font-size: 20px;
+  font-weight: bold;
+  color: rgb(var(--color-yellow));
+  text-decoration: underline;
+  text-transform: uppercase;
+  transition: color 180ms ease;
+
+  &:hover {
+    color: rgb(var(--color-white));
+    text-decoration: none;
+  }
+}
+
+.languageSwitcher {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 20px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.langButton {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 180ms ease;
+  color: rgb(var(--color-yellow));
+  text-decoration: underline;
+
+  &.active {
+    color: rgb(var(--color-white));
+    text-decoration: none;
+  }
+
+  &:hover:not(.active) {
+    color: rgb(var(--color-white));
+    text-decoration: none;
+  }
+}
+
+.separator {
+  color: rgb(var(--color-white));
+}
+
+.menuButton {
+  display: block;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: rgb(var(--color-yellow));
+  font-weight: bold;
+  font-size: 16px;
+  text-decoration: underline;
+  text-transform: uppercase;
+  transition: color 180ms ease;
+
+  @media (min-width: 768px) {
+    display: none;
+  }
+
+  &:hover {
+    color: rgb(var(--color-white));
+    text-decoration: none;
+  }
+}
