@@ -62,7 +62,7 @@ function ContactForm({ onDone }: ContactFormProps) {
 
   if (isSubmitted) {
     return (
-      <div className="mx-auto flex w-full flex-col items-center px-4 py-8 text-center text-dark md:py-12">
+      <div className="mx-auto flex w-full flex-col items-center px-4 py-8 text-center text-dark">
         <h2 className="text-xl font-bold uppercase leading-[1.1] tracking-tight">
           {t('contactForm:successTitle')}
         </h2>
@@ -84,7 +84,7 @@ function ContactForm({ onDone }: ContactFormProps) {
       onSubmit={(event) => {
         void submitForm(event)
       }}
-      className="mx-auto w-full px-4 py-8 text-dark font-light md:py-12"
+      className="mx-auto w-full px-4 py-8 text-dark font-light"
       noValidate
     >
       <p className="text-sm leading-tight text-dark md:text-sm">

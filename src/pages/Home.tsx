@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react'
+import LogoIcon from '@assets/icons/logo.svg?react'
 import { ContactForm } from '@components/common'
 import { Footer, PageBackground } from '@components/layout'
 import { Modal } from '@components/ui'
@@ -28,6 +29,10 @@ function Home() {
       </div>
 
       <Modal isOpen={isModalOpen} onClose={closeModal} title="Join us">
+        <LogoIcon
+          aria-hidden="true"
+          className="mx-auto h-16 w-[70px] [&_ellipse]:fill-purple [&_path]:fill-purple"
+        />
         <ContactForm onDone={closeModal} />
       </Modal>
     </>
