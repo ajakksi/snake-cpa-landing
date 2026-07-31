@@ -2,6 +2,11 @@ export const ru = {
   common: {
     submit: 'Отправить',
     done: 'Готово',
+    loading: 'Загрузка…',
+    footer: {
+      socialsLabel: 'Социальные сети',
+      backToTop: 'Наверх',
+    },
   },
   hero: {
     title: {
@@ -17,6 +22,20 @@ export const ru = {
       team: 'Команда',
       benefits: 'Преимущества',
       joinUs: 'С нами',
+    },
+  },
+  joinUs: {
+    title: 'Multiply with us',
+    tabsLabel: 'Варианты сотрудничества',
+    tabs: {
+      for_media_buyers: 'Медиабайерам',
+      for_businesses: 'Бизнесам',
+      for_partners: 'Партнёрам',
+    },
+    cta: {
+      for_media_buyers: 'В команду',
+      for_businesses: 'Связаться',
+      for_partners: 'Стать партнёром',
     },
   },
   contactForm: {

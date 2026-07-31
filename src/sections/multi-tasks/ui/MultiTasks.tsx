@@ -1,20 +1,16 @@
 import { useQuery } from '@tanstack/react-query'
-import { useTranslation } from 'react-i18next'
 import { getTasks } from '@api/endpoints/tasks'
 import { getApiErrorMessage } from '@api/errors'
 import snakeTasks from '@assets/images/snake-tasks.png'
 import { SectionWrapper } from '@components/layout'
+import { useLocale } from '@hooks/useLocale'
 import { highlightPhrases } from '../config/highlightPhrases'
 
 export default function MultiTasks() {
-  const {
-    i18n: { resolvedLanguage },
-  } = useTranslation()
-  const locale = resolvedLanguage?.split('-')[0] === 'ru' ? 'ru' : 'en'
+  const locale = useLocale()
   const { data, error, isPending } = useQuery({
     queryKey: ['tasks', locale],
     queryFn: () => getTasks(locale),
-    staleTime: 5 * 60 * 1000,
   })
 
   return (

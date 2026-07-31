@@ -2,6 +2,11 @@ export const en = {
   common: {
     submit: 'Submit',
     done: 'Done',
+    loading: 'Loading…',
+    footer: {
+      socialsLabel: 'Social media',
+      backToTop: 'Back to top',
+    },
   },
   hero: {
     title: {
@@ -17,6 +22,20 @@ export const en = {
       team: 'Team',
       benefits: 'Benefits',
       joinUs: 'Join us',
+    },
+  },
+  joinUs: {
+    title: 'Multiply with us',
+    tabsLabel: 'Ways to work with us',
+    tabs: {
+      for_media_buyers: 'Media buyers',
+      for_businesses: 'Businesses',
+      for_partners: 'Partners',
+    },
+    cta: {
+      for_media_buyers: 'Join the team',
+      for_businesses: 'Contact us',
+      for_partners: 'Become a partner',
     },
   },
   contactForm: {

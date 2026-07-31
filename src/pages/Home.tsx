@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 import { ContactForm } from '@components/common'
-import { PageBackground } from '@components/layout'
+import { Footer, PageBackground } from '@components/layout'
 import { Modal } from '@components/ui'
 import { Hero } from '@sections/hero'
 import { JoinUs } from '@sections/join-us'
@@ -16,12 +16,16 @@ function Home() {
     <>
       <PageBackground />
 
-      <main className="relative z-10">
-        <Hero onJoinClick={openModal} />
-        <MultiTasks />
-        <MultiBenefits />
-        <JoinUs onJoinClick={openModal} />
-      </main>
+      <div className="relative z-10">
+        <main>
+          <Hero onJoinClick={openModal} />
+          <MultiTasks />
+          <MultiBenefits />
+          <JoinUs onJoinClick={openModal} />
+        </main>
+
+        <Footer />
+      </div>
 
       <Modal isOpen={isModalOpen} onClose={closeModal} title="Join us">
         <ContactForm onDone={closeModal} />

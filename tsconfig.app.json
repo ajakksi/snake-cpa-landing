@@ -29,6 +29,7 @@
       "@app-types/*": ["src/shared/types/*"],
       "@validation/*": ["src/shared/validation/*"],
       "@constants/*": ["src/shared/constants/*"],
+      "@data/*": ["src/shared/data/*"],
       "@i18n/*": ["src/shared/i18n/*"],
       "@sections/*": ["src/sections/*"],
       "@assets/*": ["src/assets/*"],
