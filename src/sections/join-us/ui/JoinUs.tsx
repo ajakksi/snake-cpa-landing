@@ -9,6 +9,7 @@ import { SectionWrapper } from '@components/layout'
 import { Button3D } from '@components/ui'
 import { useLocale } from '@hooks/useLocale'
 import { tabKeys } from '../data/tabKeys'
+import { resolveTabKey } from '../utils/resolveTabKey'
 
 type JoinUsProps = {
   onJoinClick: () => void
@@ -46,12 +47,13 @@ export default function JoinUs({ onJoinClick }: JoinUsProps) {
               aria-orientation="vertical"
             >
               {(data.length ? data : tabKeys).map((item, index) => {
-                const key = typeof item === 'string' ? item : item.title
+                const apiTitle = typeof item === 'string' ? item : item.title
+                const tabKey = resolveTabKey(apiTitle)
                 const isActive = index === safeActiveTab
 
                 return (
                   <button
-                    key={key}
+                    key={tabKey ?? apiTitle}
                     id={`join-us-tab-${index}`}
                     type="button"
                     role="tab"
@@ -65,7 +67,7 @@ export default function JoinUs({ onJoinClick }: JoinUsProps) {
                         : 'w-auto border-yellow bg-transparent text-yellow hover:bg-yellow/10 lg:w-[92%]'
                     }`}
                   >
-                    <span>{t(`tabs.${key}`, { defaultValue: key })}</span>
+                    <span>{tabKey ? t(`tabs.${tabKey}`) : apiTitle}</span>
                     <span aria-hidden="true" className="relative h-[15px] w-[31px] shrink-0">
                       <ArrowIcon className="absolute left-1/2 top-1/2 h-[31px] w-[15px] -translate-x-1/2 -translate-y-1/2 rotate-90" />
                     </span>
@@ -103,9 +105,9 @@ export default function JoinUs({ onJoinClick }: JoinUsProps) {
                   />
                   <Button3D
                     onClick={onJoinClick}
-                    className="mt-5 min-h-[58px] w-[230px] md:min-h-[66px] md:w-[270px]"
+                    className="mt-5 min-h-[58px] min-w-[230px] max-w-full md:min-h-[66px] md:min-w-[270px]"
                   >
-                    {t(`cta.${activeItem?.title ?? tabKeys[safeActiveTab]}`)}
+                    {t(`cta.${resolveTabKey(activeItem?.title) ?? tabKeys[safeActiveTab]}`)}
                   </Button3D>
                 </>
               )}

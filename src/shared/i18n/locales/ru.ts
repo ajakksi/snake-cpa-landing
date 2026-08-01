@@ -34,7 +34,7 @@ export const ru = {
     },
     cta: {
       for_media_buyers: 'В команду',
-      for_businesses: 'Связаться',
+      for_businesses: 'Запустить проект',
       for_partners: 'Стать партнёром',
     },
   },

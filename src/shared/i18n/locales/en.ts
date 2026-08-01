@@ -28,14 +28,14 @@ export const en = {
     title: 'Multiply with us',
     tabsLabel: 'Ways to work with us',
     tabs: {
-      for_media_buyers: 'Media buyers',
-      for_businesses: 'Businesses',
-      for_partners: 'Partners',
+      for_media_buyers: 'For Media Buyers',
+      for_businesses: 'For Businesses',
+      for_partners: 'For Partners',
     },
     cta: {
       for_media_buyers: 'Join the team',
-      for_businesses: 'Contact us',
-      for_partners: 'Become a partner',
+      for_businesses: 'Launch now',
+      for_partners: 'Partner up',
     },
   },
   contactForm: {
