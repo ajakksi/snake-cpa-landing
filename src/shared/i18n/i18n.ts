@@ -15,7 +15,7 @@ void i18n.use(initReactI18next).init({
   lng: 'en',
   fallbackLng: 'en',
   defaultNS,
-  ns: ['common', 'hero', 'contactForm'],
+  ns: ['common', 'hero', 'joinUs', 'contactForm'],
   interpolation: {
     escapeValue: false,
   },

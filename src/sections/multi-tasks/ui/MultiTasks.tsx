@@ -1,20 +1,16 @@
 import { useQuery } from '@tanstack/react-query'
-import { useTranslation } from 'react-i18next'
 import { getTasks } from '@api/endpoints/tasks'
 import { getApiErrorMessage } from '@api/errors'
 import snakeTasks from '@assets/images/snake-tasks.png'
 import { SectionWrapper } from '@components/layout'
+import { useLocale } from '@hooks/useLocale'
 import { highlightPhrases } from '../config/highlightPhrases'
 
 export default function MultiTasks() {
-  const {
-    i18n: { resolvedLanguage },
-  } = useTranslation()
-  const locale = resolvedLanguage?.split('-')[0] === 'ru' ? 'ru' : 'en'
-  const { data, error } = useQuery({
+  const locale = useLocale()
+  const { data, error, isPending } = useQuery({
     queryKey: ['tasks', locale],
     queryFn: () => getTasks(locale),
-    staleTime: 5 * 60 * 1000,
   })
 
   return (
@@ -27,16 +23,18 @@ export default function MultiTasks() {
               <p className="w-full px-2.5 text-left text-[20px] font-bold leading-[1.2] md:px-[38px] md:pt-[50px] pt-5 flex-shrink-0">
                 {error
                   ? getApiErrorMessage(error)
-                  : data?.description.split(highlightPhrases[locale]).map((part, index) =>
-                      index === 0 ? (
-                        part
-                      ) : (
-                        <span key={index}>
-                          <span className="text-yellow">{highlightPhrases[locale]}</span>
-                          {part}
-                        </span>
-                      ),
-                    )}
+                  : isPending
+                    ? 'Loading…'
+                    : data?.description.split(highlightPhrases[locale]).map((part, index) =>
+                        index === 0 ? (
+                          part
+                        ) : (
+                          <span key={index}>
+                            <span className="text-yellow">{highlightPhrases[locale]}</span>
+                            {part}
+                          </span>
+                        ),
+                      )}
               </p>
               <img
                 className="pointer-events-none select-none w-full flex-1 object-cover"

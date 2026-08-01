@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react'
+import LogoIcon from '@assets/icons/logo.svg?react'
 import { ContactForm } from '@components/common'
-import { PageBackground } from '@components/layout'
+import { Footer, PageBackground } from '@components/layout'
 import { Modal } from '@components/ui'
 import Preloader from '@components/ui/preloader/Preloader'
 import { Hero } from '@sections/hero'
@@ -20,14 +21,22 @@ function Home() {
       <Preloader isReady={isReady} />
       {isReady && <PageBackground />}
 
-      <main className="relative z-10">
-        <Hero onJoinClick={openModal} />
-        <MultiTasks />
-        <MultiBenefits />
-        <JoinUs onJoinClick={openModal} />
-      </main>
+      <div className="relative z-10">
+        <main>
+          <Hero onJoinClick={openModal} />
+          <MultiTasks />
+          <MultiBenefits />
+          <JoinUs onJoinClick={openModal} />
+        </main>
+
+        <Footer />
+      </div>
 
       <Modal isOpen={isModalOpen} onClose={closeModal} title="Join us">
+        <LogoIcon
+          aria-hidden="true"
+          className="mx-auto h-16 w-[70px] [&_ellipse]:fill-purple [&_path]:fill-purple"
+        />
         <ContactForm onDone={closeModal} />
       </Modal>
     </>

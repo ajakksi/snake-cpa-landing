@@ -1,6 +1,6 @@
 .container {
   position: absolute;
-  bottom: 0;
+  bottom: 50px;
   left: 1rem;
   display: none;
   gap: 35px;
@@ -8,7 +8,7 @@
 
   @media (min-width: 768px) {
     display: flex;
-    left: 50px;
+    left: max(50px, calc((100% - 1440px) / 2 + 50px));
   }
 }
 
