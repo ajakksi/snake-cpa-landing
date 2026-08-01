@@ -1,0 +1,1 @@
+export { usePreloaderReady } from './usePreloaderReady'

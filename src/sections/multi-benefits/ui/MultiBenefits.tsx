@@ -25,7 +25,7 @@ export default function MultiBenefits() {
             </h3>
 
             <p className="mt-5 w-full max-w-[590px] text-[17px] font-medium leading-[1.16] md:mt-5 md:text-[20px] md:leading-[1.2] xl:w-[75%]">
-              {error ? getApiErrorMessage(error) : data?.description}
+              {error ? getApiErrorMessage(error) : isPending ? t('loading') : data?.description}
             </p>
           </div>
 
@@ -41,14 +41,15 @@ export default function MultiBenefits() {
           />
 
           <ul className="relative z-10 mt-12 flex w-full flex-col gap-5 md:ml-auto md:max-w-[570px] xl:mt-[min(19.556vh,176px)] xl:w-[42%] xl:gap-4">
-            {data?.benefits.map((benefit) => (
-              <li
-                key={benefit}
-                className="rounded-[8px] bg-purple px-4 py-4 text-[19px] font-bold leading-[1.2] md:px-4 md:py-4 md:text-[20px]"
-              >
-                {benefit}
-              </li>
-            ))}
+            {!isPending &&
+              data?.benefits.map((benefit) => (
+                <li
+                  key={benefit}
+                  className="rounded-[8px] bg-purple px-4 py-4 text-[19px] font-bold leading-[1.2] md:px-4 md:py-4 md:text-[20px]"
+                >
+                  {benefit}
+                </li>
+              ))}
           </ul>
         </div>
 

@@ -3,19 +3,23 @@ import LogoIcon from '@assets/icons/logo.svg?react'
 import { ContactForm } from '@components/common'
 import { Footer, PageBackground } from '@components/layout'
 import { Modal } from '@components/ui'
+import Preloader from '@components/ui/preloader/Preloader'
 import { Hero } from '@sections/hero'
 import { JoinUs } from '@sections/join-us'
 import { MultiBenefits } from '@sections/multi-benefits'
 import { MultiTasks } from '@sections/multi-tasks'
+import { usePreloaderReady } from '@hooks/usePreloaderReady'
 
 function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const openModal = useCallback(() => setIsModalOpen(true), [])
   const closeModal = useCallback(() => setIsModalOpen(false), [])
+  const isReady = usePreloaderReady()
 
   return (
     <>
-      <PageBackground />
+      <Preloader isReady={isReady} />
+      {isReady && <PageBackground />}
 
       <div className="relative z-10">
         <main>
