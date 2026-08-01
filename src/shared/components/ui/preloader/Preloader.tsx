@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import snakeLogo from '@assets/icons/logo.svg'
 import PageBackground from '@components/layout/PageBackground/PageBackground'
@@ -19,6 +19,7 @@ export default function Preloader({ isReady }: PreloaderProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const percentageRef = useRef<HTMLDivElement>(null)
   const progressBarRef = useRef<HTMLDivElement>(null)
+  const prevIsReadyRef = useRef(isReady)
   const [isVisible, setIsVisible] = useState(true)
   const animationStateRef = useRef<{
     currentPercent: number
@@ -31,6 +32,19 @@ export default function Preloader({ isReady }: PreloaderProps) {
     phase1Complete: false,
     readyReceived: false,
   })
+
+  useEffect(() => {
+    if (prevIsReadyRef.current && !isReady && !isVisible) {
+      setIsVisible(true)
+      animationStateRef.current = {
+        currentPercent: 0,
+        phase: 'phase1',
+        phase1Complete: false,
+        readyReceived: false,
+      }
+    }
+    prevIsReadyRef.current = isReady
+  }, [isReady, isVisible])
 
   useEffect(() => {
     if (isVisible) {
@@ -58,6 +72,35 @@ export default function Preloader({ isReady }: PreloaderProps) {
       progressBarRef.current.style.width = `${state.currentPercent}%`
     }
   }
+
+  const startPhase1 = useCallback(() => {
+    if (!containerRef.current || !percentageRef.current || !progressBarRef.current) return
+
+    const state = animationStateRef.current
+    if (state.phase !== 'phase1' || state.phase1Complete) return
+
+    const tl = gsap.timeline()
+
+    tl.to(
+      state,
+      {
+        currentPercent: PHASE_1_TARGET,
+        duration: PHASE_1_DURATION,
+        ease: 'linear',
+        onUpdate: () => {
+          updateDisplay()
+        },
+      },
+      0,
+    ).add(() => {
+      state.phase1Complete = true
+      if (state.readyReceived) {
+        startFinalRush()
+      } else {
+        startPhase2()
+      }
+    })
+  }, [])
 
   function startPhase2() {
     const state = animationStateRef.current
@@ -137,38 +180,14 @@ export default function Preloader({ isReady }: PreloaderProps) {
   }, [isReady])
 
   useEffect(() => {
-    if (!containerRef.current || !percentageRef.current || !progressBarRef.current) return
-
-    const state = animationStateRef.current
-
-    if (state.phase === 'phase1' && !state.phase1Complete) {
-      const tl = gsap.timeline()
-
-      tl.to(
-        state,
-        {
-          currentPercent: PHASE_1_TARGET,
-          duration: PHASE_1_DURATION,
-          ease: 'linear',
-          onUpdate: () => {
-            updateDisplay()
-          },
-        },
-        0,
-      ).add(() => {
-        state.phase1Complete = true
-        if (state.readyReceived) {
-          startFinalRush()
-        } else {
-          startPhase2()
-        }
-      })
-
-      return () => {
-        gsap.killTweensOf(state)
-      }
+    if (
+      isVisible &&
+      animationStateRef.current.phase === 'phase1' &&
+      !animationStateRef.current.phase1Complete
+    ) {
+      startPhase1()
     }
-  }, [])
+  }, [isVisible])
 
   if (!isVisible) return null
 

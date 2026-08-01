@@ -4,9 +4,11 @@ import { getApiErrorMessage } from '@api/errors'
 import snakeTasks from '@assets/images/snake-tasks.png'
 import { SectionWrapper } from '@components/layout'
 import { useLocale } from '@hooks/useLocale'
+import { useTranslation } from 'react-i18next'
 import { highlightPhrases } from '../config/highlightPhrases'
 
 export default function MultiTasks() {
+  const { t } = useTranslation('common')
   const locale = useLocale()
   const { data, error, isPending } = useQuery({
     queryKey: ['tasks', locale],
@@ -24,7 +26,7 @@ export default function MultiTasks() {
                 {error
                   ? getApiErrorMessage(error)
                   : isPending
-                    ? 'Loading…'
+                    ? t('loading')
                     : data?.description.split(highlightPhrases[locale]).map((part, index) =>
                         index === 0 ? (
                           part
@@ -46,36 +48,38 @@ export default function MultiTasks() {
 
             {/* Column 2: 2 big cards */}
             <div className="flex flex-col gap-5 md:gap-6">
-              {data?.tiles.slice(0, 2).map((tile, index) => (
-                <div
-                  key={index}
-                  className="flex-1 rounded-[16px] md:rounded-[8px] bg-purple px-2.5 py-2.5 md:px-2.5 md:py-2.5 flex flex-col"
-                >
-                  <h3 className="text-[18px] sm:text-[22px] md:text-[28px] font-bold leading-[1.2] text-yellow uppercase break-words">
-                    {tile.title}
-                  </h3>
-                  <p className="mt-2.5 text-[20px] font-normal leading-[1.2] opacity-70">
-                    {tile.text}
-                  </p>
-                </div>
-              ))}
+              {!isPending &&
+                data?.tiles.slice(0, 2).map((tile, index) => (
+                  <div
+                    key={index}
+                    className="flex-1 rounded-[16px] md:rounded-[8px] bg-purple px-2.5 py-2.5 md:px-2.5 md:py-2.5 flex flex-col"
+                  >
+                    <h3 className="text-[18px] sm:text-[22px] md:text-[28px] font-bold leading-[1.2] text-yellow uppercase break-words">
+                      {tile.title}
+                    </h3>
+                    <p className="mt-2.5 text-[20px] font-normal leading-[1.2] opacity-70">
+                      {tile.text}
+                    </p>
+                  </div>
+                ))}
             </div>
 
             {/* Column 3: 3 small cards */}
             <div className="flex flex-col gap-5 md:gap-6">
-              {data?.tiles.slice(2, 5).map((tile, index) => (
-                <div
-                  key={index}
-                  className="flex-1 rounded-[16px] md:rounded-[8px] bg-purple px-2.5 py-2.5 md:px-2.5 md:py-2.5 flex flex-col"
-                >
-                  <h3 className="text-[18px] sm:text-[22px] md:text-[28px] font-bold leading-[1.2] text-yellow uppercase break-words">
-                    {tile.title}
-                  </h3>
-                  <p className="mt-2.5 text-[20px] font-normal leading-[1.2] opacity-70">
-                    {tile.text}
-                  </p>
-                </div>
-              ))}
+              {!isPending &&
+                data?.tiles.slice(2, 5).map((tile, index) => (
+                  <div
+                    key={index}
+                    className="flex-1 rounded-[16px] md:rounded-[8px] bg-purple px-2.5 py-2.5 md:px-2.5 md:py-2.5 flex flex-col"
+                  >
+                    <h3 className="text-[18px] sm:text-[22px] md:text-[28px] font-bold leading-[1.2] text-yellow uppercase break-words">
+                      {tile.title}
+                    </h3>
+                    <p className="mt-2.5 text-[20px] font-normal leading-[1.2] opacity-70">
+                      {tile.text}
+                    </p>
+                  </div>
+                ))}
             </div>
           </div>
         </div>
