@@ -18,6 +18,7 @@ export default defineConfig({
       '@app-types': resolvePath('./src/shared/types'),
       '@validation': resolvePath('./src/shared/validation'),
       '@constants': resolvePath('./src/shared/constants'),
+      '@data': resolvePath('./src/shared/data'),
       '@i18n': resolvePath('./src/shared/i18n'),
       '@sections': resolvePath('./src/sections'),
       '@assets': resolvePath('./src/assets'),

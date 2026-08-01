@@ -4,15 +4,15 @@ import { getBenefits } from '@api/endpoints/benefits'
 import { getApiErrorMessage } from '@api/errors'
 import snakeBenefits from '@assets/images/snake-benefits.png'
 import { SectionWrapper } from '@components/layout'
+import { useLocale } from '@hooks/useLocale'
 import DreamBigMarquee from './DreamBigMarquee/DreamBigMarquee'
 
 export default function MultiBenefits() {
-  const { i18n } = useTranslation()
-  const locale = i18n.resolvedLanguage?.split('-')[0] === 'ru' ? 'ru' : 'en'
+  const { t } = useTranslation('common')
+  const locale = useLocale()
   const { data, error, isPending } = useQuery({
     queryKey: ['benefits', locale],
     queryFn: () => getBenefits(locale),
-    staleTime: 5 * 60 * 1000,
   })
 
   return (
@@ -21,7 +21,7 @@ export default function MultiBenefits() {
         <div className="container relative flex flex-1 flex-col pb-12 pt-16 md:pb-6 md:pt-12 xl:flex-row">
           <div className="relative z-10 max-w-[650px]">
             <h3 className="text-[32px] font-bold leading-[0.9] md:text-[46px] md:leading-[1.08] lg:text-[50px] lg:leading-[50px]">
-              {isPending ? 'Loading…' : data?.title}
+              {isPending ? t('loading') : data?.title}
             </h3>
 
             <p className="mt-5 w-full max-w-[590px] text-[17px] font-medium leading-[1.16] md:mt-5 md:text-[20px] md:leading-[1.2] xl:w-[75%]">
