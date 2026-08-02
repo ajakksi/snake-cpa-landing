@@ -23,7 +23,7 @@ export default {
         'gradient-main':
           'linear-gradient(111.06deg, #DC8400 -3.49%, #560080 49.69%, #220032 91.86%)',
         'gradient-tasks':
-          'linear-gradient(111.06deg, #9500DC -3.49%, #560080 49.69%, #220032 91.86%), linear-gradient(111.06deg, #14091A -3.49%, #14091A 49.69%, #220032 91.86%)',
+          'linear-gradient(111.06deg, #14091ABF -3.49%, #14091ABF 49.69%, #220032BF 91.86%), linear-gradient(111.06deg, #9500DC -3.49%, #560080 49.69%, #220032 91.86%)',
         'gradient-card':
           'linear-gradient(-115.4deg, #9500DC 17.61%, #560080 57.18%, #220032 88.56%)',
       },

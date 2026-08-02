@@ -17,6 +17,7 @@
 }
 
 .background,
+.darkVariant,
 .gridLayer,
 .maskLayer {
   position: fixed;
@@ -29,6 +30,18 @@
 .background {
   z-index: 0;
   overflow: hidden;
+}
+
+.darkVariant {
+  z-index: 2;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 280ms ease-out 200ms;
+}
+
+.darkVariantVisible {
+  opacity: 1;
+  transition-duration: 280ms;
 }
 
 .gridLayer {
@@ -83,6 +96,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .darkVariant {
+    transition: none;
+  }
+
   .maskLayer {
     animation: none;
   }

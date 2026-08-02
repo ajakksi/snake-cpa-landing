@@ -16,7 +16,7 @@ export default function MultiBenefits() {
   })
 
   return (
-    <SectionWrapper id="multi-benefits" eyebrow="Multi-benefits" className="relative text-white">
+    <SectionWrapper id="benefits" eyebrow="Multi-benefits" className="relative text-white">
       <div className="flex h-full min-h-0 flex-col">
         <div className="container relative flex flex-1 flex-col pb-12 pt-16 md:pb-6 md:pt-12 xl:flex-row">
           <div className="relative z-10 max-w-[650px]">
@@ -45,7 +45,7 @@ export default function MultiBenefits() {
               data?.benefits.map((benefit) => (
                 <li
                   key={benefit}
-                  className="rounded-[8px] bg-purple px-4 py-4 text-[19px] font-bold leading-[1.2] md:px-4 md:py-4 md:text-[20px]"
+                  className="rounded-[8px] bg-purple hover:bg-yellow hover:text-ink px-4 py-4 text-[19px] font-bold leading-[1.2] transition-colors duration-300 md:px-4 md:py-4 md:text-[20px]"
                 >
                   {benefit}
                 </li>
