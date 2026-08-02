@@ -34,7 +34,8 @@ function Home() {
       <Preloader isReady={isReady} />
       {isReady && <PageBackground variant={isDarkBackground ? 'dark' : 'main'} />}
       <FullPageScroll
-        enabled={isReady && !isModalOpen}
+        enabled={isReady}
+        suspended={isModalOpen}
         onActiveSectionChange={handleActiveSectionChange}
         onSectionTransitionStart={handleSectionTransitionStart}
       />

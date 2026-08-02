@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
+import { useTranslation } from 'react-i18next'
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -12,20 +13,34 @@ const INNER_EDGE_TOLERANCE = 1
 const MIN_INNER_OVERFLOW = 80
 const TOUCH_TRANSITION_THRESHOLD = 24
 const SCROLL_KEYS = new Set(['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '])
+const SECTION_TRANSLATION_KEYS = {
+  hero: 'nav.hero',
+  team: 'nav.team',
+  benefits: 'nav.benefits',
+  'join-us': 'nav.joinUs',
+} as const
 
 type FullPageScrollProps = {
   enabled?: boolean
+  suspended?: boolean
   onActiveSectionChange?: (sectionId: string) => void
   onSectionTransitionStart?: (fromSectionId: string, toSectionId: string) => void
 }
 
 function FullPageScroll({
   enabled = true,
+  suspended = false,
   onActiveSectionChange,
   onSectionTransitionStart,
 }: FullPageScrollProps) {
+  const { t } = useTranslation('hero')
   const [sectionIds, setSectionIds] = useState<string[]>([])
   const [activeIndex, setActiveIndex] = useState(0)
+  const suspendedRef = useRef(suspended)
+
+  useEffect(() => {
+    suspendedRef.current = suspended
+  }, [suspended])
 
   useEffect(() => {
     if (!enabled) return
@@ -35,10 +50,9 @@ function FullPageScroll({
     const scrollers = sections.map((section) =>
       section.querySelector<HTMLElement>('[data-fullpage-scroll]'),
     )
-    const initialHtmlOverflow = document.documentElement.style.overflow
-    const initialBodyOverflow = document.body.style.overflow
     let currentIndex = 0
     let canScroll = true
+    let ownsPageScrollLock = false
     let scrollTween: gsap.core.Tween | null = null
     let touchY: number | null = null
     let touchDistanceAtEdge = 0
@@ -85,11 +99,21 @@ function FullPageScroll({
       innerScrollTweens.clear()
     }
 
+    // Removes only the overflow lock created by this controller.
+    const releasePageScrollLock = () => {
+      if (!ownsPageScrollLock) return
+
+      document.documentElement.style.removeProperty('overflow')
+      document.body.style.removeProperty('overflow')
+      ownsPageScrollLock = false
+    }
+
     // Fully enables or disables the GSAP desktop mode at the 1024px breakpoint.
     const setDesktopScrollMode = () => {
       if (mediaQuery.matches) {
         document.documentElement.style.overflow = 'hidden'
         document.body.style.overflow = 'hidden'
+        ownsPageScrollLock = true
         sectionTriggers.forEach((trigger) => trigger.enable())
         currentIndex = getSectionIndexAtWindowScroll()
         window.scrollTo({ top: sections[currentIndex]?.offsetTop ?? 0 })
@@ -100,8 +124,7 @@ function FullPageScroll({
         scrollTween = null
         canScroll = true
         sectionTriggers.forEach((trigger) => trigger.disable(false))
-        document.documentElement.style.overflow = initialHtmlOverflow
-        document.body.style.overflow = initialBodyOverflow
+        releasePageScrollLock()
         currentIndex = getSectionIndexAtWindowScroll()
         publishActiveSection(currentIndex)
       }
@@ -221,6 +244,7 @@ function FullPageScroll({
     // Normalizes mouse-wheel and trackpad input into pixel deltas.
     const onWheel = (event: WheelEvent) => {
       if (
+        suspendedRef.current ||
         !mediaQuery.matches ||
         event.ctrlKey ||
         Math.abs(event.deltaY) <= Math.abs(event.deltaX)
@@ -243,14 +267,14 @@ function FullPageScroll({
 
     // Starts tracking a desktop/tablet touch gesture.
     const onTouchStart = (event: TouchEvent) => {
-      if (!mediaQuery.matches) return
+      if (suspendedRef.current || !mediaQuery.matches) return
       touchY = event.touches[0]?.clientY ?? null
       touchDistanceAtEdge = 0
     }
 
     // Converts the touch movement into the same directional delta used by the wheel handler.
     const onTouchMove = (event: TouchEvent) => {
-      if (!mediaQuery.matches || touchY === null) return
+      if (suspendedRef.current || !mediaQuery.matches || touchY === null) return
       if ((event.target as Element | null)?.closest('[role="dialog"]')) return
 
       event.preventDefault()
@@ -264,7 +288,7 @@ function FullPageScroll({
 
     // Provides keyboard equivalents for inner scrolling and section navigation.
     const onKeyDown = (event: KeyboardEvent) => {
-      if (!mediaQuery.matches || !SCROLL_KEYS.has(event.key)) return
+      if (suspendedRef.current || !mediaQuery.matches || !SCROLL_KEYS.has(event.key)) return
       if ((event.target as Element | null)?.closest('input, textarea, select, [contenteditable]'))
         return
 
@@ -287,6 +311,8 @@ function FullPageScroll({
 
     // Sends header, footer, and dot anchors through GSAP on desktop and native smooth scroll on mobile.
     const onAnchorClick = (event: MouseEvent) => {
+      if (suspendedRef.current) return
+
       const anchor = (event.target as Element | null)?.closest<HTMLAnchorElement>('a[href^="#"]')
       if (!anchor) return
 
@@ -340,8 +366,7 @@ function FullPageScroll({
       scrollTween?.kill()
       stopInnerScrollTweens()
       sectionTriggers.forEach((trigger) => trigger.kill())
-      document.documentElement.style.overflow = initialHtmlOverflow
-      document.body.style.overflow = initialBodyOverflow
+      releasePageScrollLock()
     }
   }, [enabled, onActiveSectionChange, onSectionTransitionStart])
 
@@ -349,22 +374,29 @@ function FullPageScroll({
 
   return (
     <nav
-      aria-label="Page sections"
+      aria-label={t('sectionNavigation.label')}
       className="fixed right-5 top-1/2 z-40 hidden -translate-y-1/2 flex-col gap-3 lg:flex"
     >
-      {sectionIds.map((id, index) => (
-        <a
-          key={id}
-          href={`#${id}`}
-          aria-label={`Go to section ${index + 1}`}
-          aria-current={index === activeIndex ? 'location' : undefined}
-          className={`block h-3 w-3 rounded-full border border-yellow shadow-[0_0_0_1px_rgba(26,27,31,0.35)] transition-[background-color,transform,box-shadow] duration-300 hover:scale-125 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-yellow ${
-            index === activeIndex
-              ? 'scale-125 bg-yellow shadow-[0_0_12px_rgba(255,221,0,0.8)]'
-              : 'bg-dark/30'
-          }`}
-        />
-      ))}
+      {sectionIds.map((id, index) => {
+        const sectionKey = SECTION_TRANSLATION_KEYS[id as keyof typeof SECTION_TRANSLATION_KEYS]
+        const sectionName = sectionKey ? t(sectionKey) : id
+        const navigationLabel = t('sectionNavigation.goTo', { section: sectionName })
+
+        return (
+          <a
+            key={id}
+            href={`#${id}`}
+            aria-label={navigationLabel}
+            title={navigationLabel}
+            aria-current={index === activeIndex ? 'location' : undefined}
+            className={`block h-3 w-3 rounded-full border border-yellow shadow-[0_0_0_1px_rgba(26,27,31,0.35)] transition-[background-color,transform,box-shadow] duration-300 hover:scale-125 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-yellow ${
+              index === activeIndex
+                ? 'scale-125 bg-yellow shadow-[0_0_12px_rgba(255,221,0,0.8)]'
+                : 'bg-dark/30'
+            }`}
+          />
+        )
+      })}
     </nav>
   )
 }
