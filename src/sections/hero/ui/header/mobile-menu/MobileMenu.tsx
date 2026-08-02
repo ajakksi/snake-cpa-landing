@@ -9,9 +9,10 @@ import LinkedinIcon from '@assets/icons/linkedin.svg?react'
 type MobileMenuProps = {
   isOpen: boolean
   onClose: () => void
+  onLanguageChange: (language: 'en' | 'ru') => void
 }
 
-export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
+export default function MobileMenu({ isOpen, onClose, onLanguageChange }: MobileMenuProps) {
   const { t, i18n } = useTranslation('hero')
   const isEnglish = i18n.language.startsWith('en')
 
@@ -58,25 +59,56 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
 
         <div className={styles.socialLinks}>
           {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-          <a href="#" title="Instagram" className={styles.socialLink} onClick={(e) => e.preventDefault()}>
+          <a
+            href="#"
+            title="Instagram"
+            className={styles.socialLink}
+            onClick={(e) => e.preventDefault()}
+          >
             <InstagramIcon />
           </a>
           {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-          <a href="#" title="Telegram" className={styles.socialLink} onClick={(e) => e.preventDefault()}>
+          <a
+            href="#"
+            title="Telegram"
+            className={styles.socialLink}
+            onClick={(e) => e.preventDefault()}
+          >
             <TelegramIcon />
           </a>
           {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-          <a href="#" title="LinkedIn" className={styles.socialLink} onClick={(e) => e.preventDefault()}>
+          <a
+            href="#"
+            title="LinkedIn"
+            className={styles.socialLink}
+            onClick={(e) => e.preventDefault()}
+          >
             <LinkedinIcon />
           </a>
         </div>
 
         <div className={styles.languageSwitcher}>
-          <button type="button" className={`${styles.langButton} ${isEnglish ? styles.active : ''}`}>
+          <button
+            type="button"
+            aria-pressed={isEnglish}
+            onClick={() => {
+              onLanguageChange('en')
+              onClose()
+            }}
+            className={`${styles.langButton} ${isEnglish ? styles.active : ''}`}
+          >
             ENG
           </button>
           <span className={styles.separator}>/</span>
-          <button type="button" className={`${styles.langButton} ${!isEnglish ? styles.active : ''}`}>
+          <button
+            type="button"
+            aria-pressed={!isEnglish}
+            onClick={() => {
+              onLanguageChange('ru')
+              onClose()
+            }}
+            className={`${styles.langButton} ${!isEnglish ? styles.active : ''}`}
+          >
             РУС
           </button>
         </div>
