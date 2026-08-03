@@ -1,33 +1,33 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    './index.html',
-    './src/**/*.{js,ts,jsx,tsx}',
-  ],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       colors: {
-        text: 'var(--text)',
-        'text-h': 'var(--text-h)',
-        bg: 'var(--bg)',
-        border: 'var(--border)',
-        'code-bg': 'var(--code-bg)',
-        accent: 'var(--accent)',
-        'accent-bg': 'var(--accent-bg)',
-        'accent-border': 'var(--accent-border)',
-        'social-bg': 'var(--social-bg)',
+        text: 'rgb(var(--color-white) / <alpha-value>)',
+        dark: 'rgb(var(--color-dark) / <alpha-value>)',
+        circle: 'rgb(var(--color-circle) / <alpha-value>)',
+        orange: 'rgb(var(--color-orange) / <alpha-value>)',
+        purple: 'rgb(var(--color-purple) / <alpha-value>)',
+        yellow: 'rgb(var(--color-yellow) / <alpha-value>)',
+        white: 'rgb(var(--color-white) / <alpha-value>)',
+        ink: 'rgb(var(--color-ink) / <alpha-value>)',
       },
       fontFamily: {
-        sans: 'var(--sans)',
-        heading: 'var(--heading)',
-        mono: 'var(--mono)',
-        halvar: ['HalvarBreit', 'sans-serif'],
+        sans: 'var(--font-main)',
       },
       boxShadow: {
         base: 'var(--shadow)',
+      },
+      backgroundImage: {
+        'gradient-main':
+          'linear-gradient(111.06deg, #DC8400 -3.49%, #560080 49.69%, #220032 91.86%)',
+        'gradient-tasks':
+          'linear-gradient(111.06deg, #9500DC -3.49%, #560080 49.69%, #220032 91.86%), linear-gradient(111.06deg, #14091A -3.49%, #14091A 49.69%, #220032 91.86%)',
+        'gradient-card':
+          'linear-gradient(-115.4deg, #9500DC 17.61%, #560080 57.18%, #220032 88.56%)',
       },
     },
   },
   plugins: [],
 }
-

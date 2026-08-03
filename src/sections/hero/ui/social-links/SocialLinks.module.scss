@@ -1,0 +1,30 @@
+.container {
+  position: absolute;
+  bottom: 50px;
+  left: 1rem;
+  display: none;
+  gap: 35px;
+  z-index: 10;
+
+  @media (min-width: 768px) {
+    display: flex;
+    left: max(50px, calc((100% - 1440px) / 2 + 50px));
+  }
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 180ms ease;
+  color: rgb(var(--color-white));
+
+  svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  &:hover {
+    color: rgb(var(--color-yellow));
+  }
+}

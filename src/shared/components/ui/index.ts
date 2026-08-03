@@ -1,0 +1,8 @@
+export { default as Button } from './button/Button'
+export { default as Button3D } from './button-3d/Button3D'
+export { default as Button3DLink } from './button-3d/Button3DLink'
+export { default as Input } from './input/Input'
+export { default as Modal } from './modal/Modal'
+export { default as Preloader } from './preloader/Preloader'
+export { default as SectionTitle } from './section-title/SectionTitle'
+export { default as Select } from './select/Select'

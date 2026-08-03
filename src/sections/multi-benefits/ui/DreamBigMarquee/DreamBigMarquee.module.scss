@@ -1,0 +1,31 @@
+.marqueeTrack {
+  animation: marquee 18s linear infinite;
+  will-change: transform;
+}
+
+.marqueeLogo {
+  width: 52px;
+  height: 49px;
+  flex: none;
+  background-color: rgb(var(--color-yellow));
+  mask: url('../../../assets/icons/logo.svg') center / contain no-repeat;
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 768px) {
+  .marqueeLogo {
+    width: 30px;
+    height: 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marqueeTrack {
+    animation-play-state: paused;
+  }
+}

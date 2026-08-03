@@ -1,0 +1,137 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(var(--color-dark), 0.8);
+  z-index: 99;
+}
+
+.menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgb(var(--color-circle)) 0%, rgb(var(--color-purple)) 100%);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  overflow-y: auto;
+}
+
+.header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  z-index: 101;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: rgb(var(--color-yellow));
+  font-size: 24px;
+  font-weight: bold;
+  font-family: var(--font-main);
+  cursor: pointer;
+  padding: 0;
+  transition: color 180ms ease;
+
+  &:hover {
+    color: rgb(var(--color-white));
+  }
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  width: 100%;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+
+.link {
+  font-family: var(--font-main);
+  font-size: 32px;
+  font-weight: bold;
+  color: rgb(var(--color-yellow));
+  text-decoration: underline;
+  text-transform: uppercase;
+  transition: color 180ms ease;
+
+  &:active {
+    color: rgb(var(--color-white));
+  }
+}
+
+.socialLinks {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.socialLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 180ms ease;
+  color: rgb(var(--color-white));
+
+  svg {
+    width: 40px;
+    height: 40px;
+  }
+
+  &:active {
+    color: rgb(var(--color-yellow));
+  }
+}
+
+.languageSwitcher {
+  display: flex;
+  gap: 0.5rem;
+  font-family: var(--font-main);
+  font-size: 32px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.langButton {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 180ms ease;
+  color: rgb(var(--color-yellow));
+  text-decoration: underline;
+
+  &.active {
+    color: rgb(var(--color-white));
+    text-decoration: none;
+  }
+
+  &:active:not(.active) {
+    color: rgb(var(--color-white));
+    text-decoration: none;
+  }
+}
+
+.separator {
+  color: rgb(var(--color-white));
+}

@@ -8,6 +8,7 @@
     "types": ["vite/client"],
     "allowArbitraryExtensions": true,
     "skipLibCheck": true,
+    "strict": true,
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -20,13 +21,15 @@
     /* Path aliases */
     "baseUrl": ".",
     "paths": {
+      "@pages/*": ["src/pages/*"],
       "@components/*": ["src/shared/components/*"],
       "@hooks/*": ["src/shared/hooks/*"],
       "@utils/*": ["src/shared/utils/*"],
       "@api/*": ["src/shared/api/*"],
-      "@types/*": ["src/shared/types/*"],
+      "@app-types/*": ["src/shared/types/*"],
       "@validation/*": ["src/shared/validation/*"],
       "@constants/*": ["src/shared/constants/*"],
+      "@data/*": ["src/shared/data/*"],
       "@i18n/*": ["src/shared/i18n/*"],
       "@sections/*": ["src/sections/*"],
       "@assets/*": ["src/assets/*"],

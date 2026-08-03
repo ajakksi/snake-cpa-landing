@@ -1,0 +1,89 @@
+@property --light-x {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 90%;
+}
+
+@property --light-y {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 10%;
+}
+
+@property --light-opacity {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0.8;
+}
+
+.background,
+.gridLayer,
+.maskLayer {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  pointer-events: none;
+}
+
+.background {
+  z-index: 0;
+  overflow: hidden;
+}
+
+.gridLayer {
+  z-index: 0;
+  background: url('../../../../assets/images/bg-grid.svg') 20% center / cover no-repeat;
+}
+
+.maskLayer {
+  --light-radius-x: clamp(180px, 20.417vw, 294px);
+  --light-radius-y: clamp(112.5px, 12.743vw, 183.5px);
+
+  z-index: 1;
+  mask-image: radial-gradient(
+    ellipse var(--light-radius-x) var(--light-radius-y) at var(--light-x) var(--light-y),
+    rgb(0 0 0 / var(--light-opacity)) 38%,
+    black 100%
+  );
+  mask-composite: exclude;
+  animation: flashlight 10s ease-in-out infinite alternate;
+  -webkit-mask-image: radial-gradient(
+    ellipse var(--light-radius-x) var(--light-radius-y) at var(--light-x) var(--light-y),
+    rgb(0 0 0 / var(--light-opacity)) 38%,
+    black 100%
+  );
+  -webkit-mask-composite: destination-out;
+}
+
+@keyframes flashlight {
+  0% {
+    --light-x: 90%;
+    --light-y: 10%;
+    --light-opacity: 0.8;
+  }
+
+  50% {
+    --light-x: -5%;
+    --light-y: 55%;
+    --light-opacity: 0.6;
+  }
+
+  100% {
+    --light-x: 90%;
+    --light-y: 90%;
+    --light-opacity: 0.7;
+  }
+}
+
+@media (max-width: 768px) {
+  .gridLayer {
+    background-position: 70% center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .maskLayer {
+    animation: none;
+  }
+}
