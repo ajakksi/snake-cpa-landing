@@ -16,7 +16,7 @@ export default function MultiTasks() {
   })
 
   return (
-    <SectionWrapper id="multi-tasks" eyebrow="Multi-tasks" className="relative text-white">
+    <SectionWrapper id="team" eyebrow="Multi-tasks" className="relative text-white">
       <div className="flex h-full min-h-0 flex-col">
         <div className="container relative flex flex-1 flex-col pb-12 pt-16 md:pb-6 md:pt-12">
           <div className="relative z-10 grid gap-5 md:gap-5 grid-cols-1 md:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,1fr)]">

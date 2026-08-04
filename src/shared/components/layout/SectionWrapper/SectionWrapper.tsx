@@ -18,22 +18,25 @@ function SectionWrapper({
   className = '',
   contentClassName = '',
 }: SectionWrapperProps) {
-  const sectionClasses = ['relative min-h-dvh w-full md:min-h-dvh', className]
+  const sectionClasses = [
+    'relative lg:min-h-dvh w-full lg:h-dvh lg:min-h-0 lg:overflow-hidden',
+    className,
+  ]
     .filter(Boolean)
     .join(' ')
 
   const containerClasses = [
-    'flex min-h-dvh w-full flex-col pt-[20px] pb-8 md:h-full md:min-h-0 md:pt-[3vh]',
+    'fullpage-scrollbar flex lg:min-h-dvh w-full flex-col pt-[20px] pb-8 md:pt-[3vh] lg:h-dvh lg:min-h-0 lg:overflow-y-auto lg:overscroll-contain',
     contentClassName,
   ]
     .filter(Boolean)
     .join(' ')
 
   return (
-    <section id={id} className={sectionClasses}>
-      <div className={containerClasses}>
+    <section id={id} data-fullpage-section className={sectionClasses}>
+      <div data-fullpage-scroll className={containerClasses}>
         {eyebrow && (
-          <SectionTitle className="container order-2 mt-auto mb-[50px] md:order-1 md:mt-0 md:mb-0">
+          <SectionTitle className="container order-2 mt-auto mb-[20px] md:order-1 md:mt-0 md:mb-0">
             {eyebrow}
           </SectionTitle>
         )}

@@ -38,7 +38,7 @@ export default function JoinUs({ onJoinClick }: JoinUsProps) {
     <SectionWrapper id="join-us" eyebrow="MULTIPLY WITH US" className="relative text-white">
       <div className="flex h-full min-h-0 flex-col">
         <div className="container relative flex flex-1 flex-col pt-8 md:pt-12">
-          <div className="relative grid flex-1 content-between gap-8 pb-[50px] md:pb-[100px] lg:grid-cols-[minmax(400px,0.9fr)_minmax(0,1.3fr)] lg:items-start lg:gap-12 lg:pb-28 xl:grid-cols-[520px_minmax(0,720px)] xl:justify-between xl:gap-14">
+          <div className="relative grid flex-1 content-between gap-8 pb-[50px] md:pb-[100px] lg:grid-cols-[minmax(400px,0.9fr)_minmax(0,1.3fr)] lg:items-start lg:gap-12 lg:pb-16 xl:grid-cols-[520px_minmax(0,720px)] xl:justify-between xl:gap-14">
             {/* Tab controls */}
             <div
               className="relative z-20 flex flex-col items-center gap-4 lg:items-stretch"
@@ -81,7 +81,7 @@ export default function JoinUs({ onJoinClick }: JoinUsProps) {
               id="join-us-panel"
               role="tabpanel"
               aria-labelledby={`join-us-tab-${safeActiveTab}`}
-              className="relative z-20 flex min-h-[360px] w-full min-w-0 flex-col items-center justify-center rounded-xl bg-purple px-6 py-10 text-center md:min-h-[410px] md:px-12 lg:h-[550px]"
+              className="relative z-20 flex min-h-[360px] w-full min-w-0 flex-col items-center justify-center rounded-xl bg-purple px-6 py-8 text-center md:min-h-[410px] md:px-8 lg:h-[490px]"
             >
               {error ? (
                 <p className="text-[18px] font-medium">{getApiErrorMessage(error)}</p>
