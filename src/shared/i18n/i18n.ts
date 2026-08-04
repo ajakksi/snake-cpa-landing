@@ -10,9 +10,18 @@ export const resources = {
   ru,
 } as const
 
+export type SupportedLocale = keyof typeof resources
+
+export function isSupportedLocale(locale: string): locale is SupportedLocale {
+  return Object.hasOwn(resources, locale)
+}
+
+const pathLocale = window.location.pathname.split('/')[1]
+const initialLanguage = isSupportedLocale(pathLocale) ? pathLocale : 'en'
+
 void i18n.use(initReactI18next).init({
   resources,
-  lng: 'en',
+  lng: initialLanguage,
   fallbackLng: 'en',
   defaultNS,
   ns: ['common', 'hero', 'joinUs', 'contactForm'],
