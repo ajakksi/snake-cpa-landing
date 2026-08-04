@@ -23,10 +23,6 @@ export const en = {
       benefits: 'Benefits',
       joinUs: 'Join us',
     },
-    sectionNavigation: {
-      label: 'Page sections',
-      goTo: 'Go to {{section}}',
-    },
   },
   joinUs: {
     title: 'Multiply with us',

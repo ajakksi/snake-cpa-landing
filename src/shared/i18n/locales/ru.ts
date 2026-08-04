@@ -23,10 +23,6 @@ export const ru = {
       benefits: 'Преимущества',
       joinUs: 'С нами',
     },
-    sectionNavigation: {
-      label: 'Разделы страницы',
-      goTo: 'Перейти к «{{section}}»',
-    },
   },
   joinUs: {
     title: 'Multiply with us',

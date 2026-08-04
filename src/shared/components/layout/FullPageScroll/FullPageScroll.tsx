@@ -1,10 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
-import { useTranslation } from 'react-i18next'
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-gsap.registerPlugin(ScrollToPlugin, ScrollTrigger)
+gsap.registerPlugin(ScrollToPlugin)
 
 const DESKTOP_QUERY = '(min-width: 1024px)'
 const TRANSITION_DURATION = 0.85
@@ -12,13 +10,10 @@ const INNER_SCROLL_DURATION = 0.35
 const INNER_EDGE_TOLERANCE = 1
 const MIN_INNER_OVERFLOW = 80
 const TOUCH_TRANSITION_THRESHOLD = 24
+const WHEEL_GESTURE_IDLE_DELAY = 120
+const WHEEL_RESTART_MIN_DELTA = 40
+const WHEEL_RESTART_ACCELERATION = 3
 const SCROLL_KEYS = new Set(['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '])
-const SECTION_TRANSLATION_KEYS = {
-  hero: 'nav.hero',
-  team: 'nav.team',
-  benefits: 'nav.benefits',
-  'join-us': 'nav.joinUs',
-} as const
 
 type FullPageScrollProps = {
   enabled?: boolean
@@ -33,9 +28,6 @@ function FullPageScroll({
   onActiveSectionChange,
   onSectionTransitionStart,
 }: FullPageScrollProps) {
-  const { t } = useTranslation('hero')
-  const [sectionIds, setSectionIds] = useState<string[]>([])
-  const [activeIndex, setActiveIndex] = useState(0)
   const suspendedRef = useRef(suspended)
 
   useEffect(() => {
@@ -56,10 +48,43 @@ function FullPageScroll({
     let scrollTween: gsap.core.Tween | null = null
     let touchY: number | null = null
     let touchDistanceAtEdge = 0
+    let touchInnerScrollConsumed = false
+    let wheelGestureActive = false
+    let wheelTransitionConsumed = false
+    let wheelInnerScrollConsumed = false
+    let previousWheelMagnitude = 0
+    let wheelGestureTimer: ReturnType<typeof setTimeout> | null = null
+    let lastWheelEventAt = 0
     let animationFrame = 0
     let activeUpdateFrame = 0
     const innerScrollTargets = new Map<HTMLElement, number>()
     const innerScrollTweens = new Map<HTMLElement, gsap.core.Tween>()
+
+    const getWheelPixelDelta = (event: WheelEvent) => {
+      const multiplier =
+        event.deltaMode === WheelEvent.DOM_DELTA_LINE
+          ? 16
+          : event.deltaMode === WheelEvent.DOM_DELTA_PAGE
+            ? window.innerHeight
+            : 1
+      return event.deltaY * multiplier
+    }
+
+    const finishWheelGestureAfterIdle = () => {
+      const remainingDelay = WHEEL_GESTURE_IDLE_DELAY - (performance.now() - lastWheelEventAt)
+      if (remainingDelay > 0) {
+        wheelGestureTimer = setTimeout(finishWheelGestureAfterIdle, remainingDelay)
+        return
+      }
+
+      wheelGestureActive = false
+      wheelGestureTimer = null
+      previousWheelMagnitude = 0
+      if (canScroll) {
+        wheelTransitionConsumed = false
+        wheelInnerScrollConsumed = false
+      }
+    }
 
     // Resolves the section whose top edge the document has most recently crossed.
     const getSectionIndexAtWindowScroll = () => {
@@ -70,26 +95,11 @@ function FullPageScroll({
       return index
     }
 
-    // Keeps the navigation UI and external consumers in sync with one active section.
+    // Keeps external consumers in sync with the active section.
     const publishActiveSection = (index: number) => {
-      setActiveIndex(index)
       const sectionId = sections[index]?.id
       if (sectionId) onActiveSectionChange?.(sectionId)
     }
-
-    const sectionTriggers = sections.map((section, index) =>
-      ScrollTrigger.create({
-        id: `fullpage-${section.id}`,
-        trigger: section,
-        start: 'top top',
-        end: 'bottom top',
-        invalidateOnRefresh: true,
-        // ScrollTrigger only drives the dots during a tween. External section state is
-        // published explicitly at transition boundaries to avoid background flicker.
-        onEnter: () => setActiveIndex(index),
-        onEnterBack: () => setActiveIndex(index),
-      }),
-    )
 
     // Stops every in-flight inner tween when full-page mode is switched off.
     const stopInnerScrollTweens = () => {
@@ -114,7 +124,6 @@ function FullPageScroll({
         document.documentElement.style.overflow = 'hidden'
         document.body.style.overflow = 'hidden'
         ownsPageScrollLock = true
-        sectionTriggers.forEach((trigger) => trigger.enable())
         currentIndex = getSectionIndexAtWindowScroll()
         window.scrollTo({ top: sections[currentIndex]?.offsetTop ?? 0 })
         publishActiveSection(currentIndex)
@@ -123,12 +132,10 @@ function FullPageScroll({
         stopInnerScrollTweens()
         scrollTween = null
         canScroll = true
-        sectionTriggers.forEach((trigger) => trigger.disable(false))
         releasePageScrollLock()
         currentIndex = getSectionIndexAtWindowScroll()
         publishActiveSection(currentIndex)
       }
-      ScrollTrigger.refresh()
     }
 
     // Positions a tall destination at its bottom when entering backwards, or at its top otherwise.
@@ -169,8 +176,6 @@ function FullPageScroll({
       onSectionTransitionStart?.(sections[currentIndex].id, targetSection.id)
       canScroll = false
       prepareInnerScroll(targetIndex, direction, fromAnchor)
-      // The dot can react immediately, while external visuals wait until the section arrives.
-      setActiveIndex(targetIndex)
 
       scrollTween = gsap.to(window, {
         scrollTo: { y: targetSection.offsetTop, autoKill: false },
@@ -182,19 +187,25 @@ function FullPageScroll({
           publishActiveSection(targetIndex)
           scrollTween = null
           canScroll = true
+          if (!wheelGestureActive) wheelTransitionConsumed = false
         },
         onInterrupt: () => {
           currentIndex = getSectionIndexAtWindowScroll()
           publishActiveSection(currentIndex)
           scrollTween = null
           canScroll = true
+          if (!wheelGestureActive) wheelTransitionConsumed = false
         },
       })
     }
 
     // Routes input to the current section's overflow first, then to the adjacent section at an edge.
-    const moveInsideOrBetweenSections = (delta: number, touchInput = false) => {
-      if (!canScroll || delta === 0) return
+    const moveInsideOrBetweenSections = (
+      delta: number,
+      touchInput = false,
+      allowSectionTransition = true,
+    ) => {
+      if (!canScroll || delta === 0) return false
 
       const direction = Math.sign(delta)
       const scroller = scrollers[currentIndex]
@@ -213,7 +224,7 @@ function FullPageScroll({
         const nextInnerTarget = Math.max(0, Math.min(maxInnerScroll, currentInnerTarget + delta))
         smoothScrollInside(scroller, nextInnerTarget, touchInput)
         touchDistanceAtEdge = 0
-        return
+        return true
       }
 
       if (scroller && !hasMeaningfulInnerScroll && scroller.scrollTop !== 0) {
@@ -229,16 +240,18 @@ function FullPageScroll({
         ((direction > 0 && scroller.scrollTop < maxInnerScroll - INNER_EDGE_TOLERANCE) ||
           (direction < 0 && scroller.scrollTop > INNER_EDGE_TOLERANCE))
       ) {
-        return
+        return false
       }
 
       if (touchInput) {
         touchDistanceAtEdge += Math.abs(delta)
-        if (touchDistanceAtEdge < TOUCH_TRANSITION_THRESHOLD) return
+        if (touchDistanceAtEdge < TOUCH_TRANSITION_THRESHOLD) return false
       }
 
       touchDistanceAtEdge = 0
+      if (!allowSectionTransition) return false
       animateToSection(currentIndex + direction, direction)
+      return false
     }
 
     // Normalizes mouse-wheel and trackpad input into pixel deltas.
@@ -254,15 +267,33 @@ function FullPageScroll({
       if ((event.target as Element | null)?.closest('[role="dialog"]')) return
 
       event.preventDefault()
-      if (!canScroll) return
 
-      const multiplier =
-        event.deltaMode === WheelEvent.DOM_DELTA_LINE
-          ? 16
-          : event.deltaMode === WheelEvent.DOM_DELTA_PAGE
-            ? window.innerHeight
-            : 1
-      moveInsideOrBetweenSections(event.deltaY * multiplier)
+      const pixelDeltaY = getWheelPixelDelta(event)
+      const wheelMagnitude = Math.abs(pixelDeltaY)
+      const hasRenewedIntent =
+        (wheelTransitionConsumed || wheelInnerScrollConsumed) &&
+        canScroll &&
+        wheelMagnitude >= WHEEL_RESTART_MIN_DELTA &&
+        previousWheelMagnitude > 0 &&
+        wheelMagnitude >= previousWheelMagnitude * WHEEL_RESTART_ACCELERATION
+
+      wheelGestureActive = true
+      lastWheelEventAt = performance.now()
+      if (wheelGestureTimer === null) {
+        wheelGestureTimer = setTimeout(finishWheelGestureAfterIdle, WHEEL_GESTURE_IDLE_DELAY)
+      }
+      previousWheelMagnitude = wheelMagnitude
+
+      if (hasRenewedIntent) {
+        wheelTransitionConsumed = false
+        wheelInnerScrollConsumed = false
+      }
+
+      if (!canScroll || wheelTransitionConsumed) return
+
+      const movedInside = moveInsideOrBetweenSections(pixelDeltaY, false, !wheelInnerScrollConsumed)
+      if (movedInside) wheelInnerScrollConsumed = true
+      if (!canScroll) wheelTransitionConsumed = true
     }
 
     // Starts tracking a desktop/tablet touch gesture.
@@ -270,6 +301,7 @@ function FullPageScroll({
       if (suspendedRef.current || !mediaQuery.matches) return
       touchY = event.touches[0]?.clientY ?? null
       touchDistanceAtEdge = 0
+      touchInnerScrollConsumed = false
     }
 
     // Converts the touch movement into the same directional delta used by the wheel handler.
@@ -279,11 +311,13 @@ function FullPageScroll({
 
       event.preventDefault()
       const nextTouchY = event.touches[0]?.clientY
-      if (nextTouchY === undefined || !canScroll) return
+      if (nextTouchY === undefined) return
 
       const delta = touchY - nextTouchY
       touchY = nextTouchY
-      moveInsideOrBetweenSections(delta, true)
+      if (!canScroll) return
+      const movedInside = moveInsideOrBetweenSections(delta, true, !touchInnerScrollConsumed)
+      if (movedInside) touchInnerScrollConsumed = true
     }
 
     // Provides keyboard equivalents for inner scrolling and section navigation.
@@ -328,7 +362,7 @@ function FullPageScroll({
       window.history.replaceState(null, '', anchor.hash)
     }
 
-    // Tracks the active section during ordinary mobile scrolling while ScrollTrigger is disabled.
+    // Tracks the active section during ordinary mobile scrolling.
     const onNativeScroll = () => {
       if (mediaQuery.matches) return
       cancelAnimationFrame(activeUpdateFrame)
@@ -347,7 +381,6 @@ function FullPageScroll({
     mediaQuery.addEventListener('change', setDesktopScrollMode)
 
     animationFrame = requestAnimationFrame(() => {
-      setSectionIds(sections.map((section) => section.id))
       currentIndex = getSectionIndexAtWindowScroll()
       publishActiveSection(currentIndex)
       setDesktopScrollMode()
@@ -363,42 +396,14 @@ function FullPageScroll({
       mediaQuery.removeEventListener('change', setDesktopScrollMode)
       cancelAnimationFrame(animationFrame)
       cancelAnimationFrame(activeUpdateFrame)
+      if (wheelGestureTimer !== null) clearTimeout(wheelGestureTimer)
       scrollTween?.kill()
       stopInnerScrollTweens()
-      sectionTriggers.forEach((trigger) => trigger.kill())
       releasePageScrollLock()
     }
   }, [enabled, onActiveSectionChange, onSectionTransitionStart])
 
-  if (!enabled || sectionIds.length < 2) return null
-
-  return (
-    <nav
-      aria-label={t('sectionNavigation.label')}
-      className="fixed right-5 top-1/2 z-40 hidden -translate-y-1/2 flex-col gap-3 lg:flex"
-    >
-      {sectionIds.map((id, index) => {
-        const sectionKey = SECTION_TRANSLATION_KEYS[id as keyof typeof SECTION_TRANSLATION_KEYS]
-        const sectionName = sectionKey ? t(sectionKey) : id
-        const navigationLabel = t('sectionNavigation.goTo', { section: sectionName })
-
-        return (
-          <a
-            key={id}
-            href={`#${id}`}
-            aria-label={navigationLabel}
-            title={navigationLabel}
-            aria-current={index === activeIndex ? 'location' : undefined}
-            className={`block h-3 w-3 rounded-full border border-yellow shadow-[0_0_0_1px_rgba(26,27,31,0.35)] transition-[background-color,transform,box-shadow] duration-300 hover:scale-125 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-yellow ${
-              index === activeIndex
-                ? 'scale-125 bg-yellow shadow-[0_0_12px_rgba(255,221,0,0.8)]'
-                : 'bg-dark/30'
-            }`}
-          />
-        )
-      })}
-    </nav>
-  )
+  return null
 }
 
 export default FullPageScroll
