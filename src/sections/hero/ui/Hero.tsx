@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import snakeHero from '@assets/images/snake-hero.png'
 import Header from './header/Header'
 import SocialLinks from './social-links/SocialLinks'
+import AnimatedWord from './AnimatedWord'
 
 type HeroProps = {
   onJoinClick: () => void
@@ -18,10 +19,11 @@ export default function Hero({ onJoinClick }: HeroProps) {
         <Header />
 
         <div className="relative z-10 max-w-[758px]">
-          <h1 className="text-[38px] md:text-[80px] font-bold leading-[0.9] text-white mb-3 md:mb-[12px] uppercase">
+          <h1 className="text-[38px] md:text-[80px] font-bold leading-[0.9] tracking-[-0.83px] md:tracking-[-1.74px] text-white mb-3 md:mb-[12px] uppercase">
             <div>{t('title.word1')}</div>
-            <div>
-              {t('title.word2')} <span className="text-yellow">{t('title.word3')}</span>
+            <div className="flex flex-nowrap items-end gap-x-3 whitespace-nowrap">
+              <span>{t('title.word2')}</span>
+              <AnimatedWord />
             </div>
           </h1>
 
