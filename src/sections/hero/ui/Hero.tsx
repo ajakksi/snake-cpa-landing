@@ -3,6 +3,7 @@ import { SectionWrapper } from '@components/layout/'
 import { Button3D } from '@components/ui'
 import { useTranslation } from 'react-i18next'
 import { useHeroAnimation } from '../hooks/useHeroAnimation'
+import AnimatedWord from './AnimatedWord'
 import snakeHero from '@assets/images/snake-hero.png'
 import Header from './header/Header'
 import SocialLinks from './social-links/SocialLinks'
@@ -39,11 +40,12 @@ export default function Hero({ onJoinClick, playTrigger, resetTrigger, exitTrigg
         <div className="relative z-10 max-w-[758px]">
           <h1
             ref={titleRef}
-            className={`text-[38px] md:text-[80px] font-bold leading-[0.9] text-white mb-3 md:mb-[12px] uppercase ${HIDDEN_CLASS}`}
+            className={`text-[38px] md:text-[80px] font-bold leading-[0.9] tracking-[-0.83px] md:tracking-[-1.74px] text-white mb-3 md:mb-[12px] uppercase ${HIDDEN_CLASS}`}
           >
             <div>{t('title.word1')}</div>
-            <div>
-              {t('title.word2')} <span className="text-yellow">{t('title.word3')}</span>
+            <div className="flex flex-nowrap items-end gap-x-3 whitespace-nowrap">
+              <span>{t('title.word2')}</span>
+              <AnimatedWord />
             </div>
           </h1>
 
