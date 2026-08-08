@@ -18,7 +18,7 @@ export default function Hero({ onJoinClick }: HeroProps) {
       <div className="container relative flex h-full min-h-0 flex-col">
         <Header />
 
-        <div className="relative z-10 max-w-[758px]">
+        <div className="relative z-10 max-w-[758px] pt-[110px] md:pt-0">
           <h1 className="text-[38px] md:text-[80px] font-bold leading-[0.9] tracking-[-0.83px] md:tracking-[-1.74px] text-white mb-3 md:mb-[12px] uppercase">
             <div>{t('title.word1')}</div>
             <div className="flex flex-nowrap items-end gap-x-3 whitespace-nowrap">

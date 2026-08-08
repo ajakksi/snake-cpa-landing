@@ -1,5 +1,6 @@
 import type { HTMLAttributes } from 'react'
 import styles from './PageBackground.module.scss'
+import { useIsMobile } from '@hooks/useDeviceType'
 
 type PageBackgroundVariant = 'main' | 'dark'
 
@@ -17,14 +18,18 @@ function PageBackground({
   className = '',
   ...backgroundProps
 }: PageBackgroundProps) {
+  const isMobile = useIsMobile()
+
+  const bgClass = isMobile ? 'bg-mobile-bg' : gradientClasses.main
+
   return (
     <div
-      className={`${styles.background} ${gradientClasses.main} ${className}`}
+      className={`${styles.background} ${bgClass} ${className}`}
       aria-hidden="true"
       {...backgroundProps}
     >
-      <div className={styles.gridLayer} />
-      <div className={`${styles.maskLayer} ${gradientClasses.main}`} />
+      {!isMobile && <div className={styles.gridLayer} />}
+      {!isMobile && <div className={`${styles.maskLayer} ${gradientClasses.main}`} />}
 
       <div
         className={`${styles.darkVariant} ${

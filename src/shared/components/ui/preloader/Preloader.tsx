@@ -55,7 +55,10 @@ export default function Preloader({ isReady }: PreloaderProps) {
       }
       return () => {
         document.body.style.overflow = ''
-        document.body.style.paddingRight = ''
+        // Use a small delay to prevent layout shift when scrollbar appears
+        setTimeout(() => {
+          document.body.style.paddingRight = ''
+        }, 0)
       }
     }
   }, [isVisible])

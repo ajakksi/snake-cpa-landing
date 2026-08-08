@@ -91,7 +91,11 @@
 
 @media (max-width: 768px) {
   .gridLayer {
-    background-position: 70% center;
+    display: none;
+  }
+
+  .maskLayer {
+    display: none;
   }
 }
 
