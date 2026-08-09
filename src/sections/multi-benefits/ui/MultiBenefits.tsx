@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { getBenefits } from '@api/endpoints/benefits'
-import { getApiErrorMessage } from '@api/errors'
+import { getApiErrorMessage } from '@api/errors/errors'
 import snakeBenefits from '@assets/images/snake-benefits.png'
 import { SectionWrapper } from '@components/layout'
 import { useLocale } from '@hooks/useLocale'

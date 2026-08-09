@@ -1,5 +1,5 @@
 import axios, { type AxiosRequestConfig } from 'axios'
-import { ApiError } from './errors'
+import { ApiError } from './errors/errors'
 
 const apiUrl = import.meta.env.VITE_API_URL
 const apiKey = import.meta.env.VITE_API_KEY

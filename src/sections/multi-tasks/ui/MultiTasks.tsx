@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { getTasks } from '@api/endpoints/tasks'
-import { getApiErrorMessage } from '@api/errors'
+import { getApiErrorMessage } from '@api/errors/errors'
 import snakeTasks from '@assets/images/snake-tasks.png'
 import { SectionWrapper } from '@components/layout'
 import { useLocale } from '@hooks/useLocale'
