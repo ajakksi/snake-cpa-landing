@@ -10,9 +10,9 @@ export default function Header() {
   const { t, i18n } = useTranslation('hero')
   const location = useLocation()
   const navigate = useNavigate()
-  const isEnglish = (i18n.resolvedLanguage ?? i18n.language).startsWith('en')
+  const currentLanguage = i18n.resolvedLanguage ?? i18n.language
 
-  const changeLanguage = (language: 'en' | 'ru') => {
+  const changeLanguage = (language: 'en' | 'ru' | 'ua') => {
     void i18n.changeLanguage(language)
     void navigate({
       pathname: language === 'en' ? '/' : `/${language}`,
@@ -20,6 +20,8 @@ export default function Header() {
       hash: location.hash,
     })
   }
+
+  const isLanguageActive = (language: string) => currentLanguage.startsWith(language)
 
   return (
     <header className={styles.header}>
@@ -43,9 +45,9 @@ export default function Header() {
             type="button"
             lang="en"
             aria-label="Switch to English"
-            aria-pressed={isEnglish}
+            aria-pressed={isLanguageActive('en')}
             onClick={() => changeLanguage('en')}
-            className={`${styles.langButton} ${isEnglish ? styles.active : ''}`}
+            className={`${styles.langButton} ${isLanguageActive('en') ? styles.active : ''}`}
           >
             ENG
           </button>
@@ -54,11 +56,22 @@ export default function Header() {
             type="button"
             lang="ru"
             aria-label="Переключить на русский"
-            aria-pressed={!isEnglish}
+            aria-pressed={isLanguageActive('ru')}
             onClick={() => changeLanguage('ru')}
-            className={`${styles.langButton} ${!isEnglish ? styles.active : ''}`}
+            className={`${styles.langButton} ${isLanguageActive('ru') ? styles.active : ''}`}
           >
             РУС
+          </button>
+          <span className={styles.separator}>/</span>
+          <button
+            type="button"
+            lang="uk"
+            aria-label="Перейти на українську"
+            aria-pressed={isLanguageActive('ua')}
+            onClick={() => changeLanguage('ua')}
+            className={`${styles.langButton} ${isLanguageActive('ua') ? styles.active : ''}`}
+          >
+            УКР
           </button>
         </div>
       </div>

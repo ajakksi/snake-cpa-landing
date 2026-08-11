@@ -9,12 +9,14 @@ import LinkedinIcon from '@assets/icons/linkedin.svg?react'
 type MobileMenuProps = {
   isOpen: boolean
   onClose: () => void
-  onLanguageChange: (language: 'en' | 'ru') => void
+  onLanguageChange: (language: 'en' | 'ru' | 'ua') => void
 }
 
 export default function MobileMenu({ isOpen, onClose, onLanguageChange }: MobileMenuProps) {
   const { t, i18n } = useTranslation('hero')
-  const isEnglish = i18n.language.startsWith('en')
+  const currentLanguage = i18n.resolvedLanguage ?? i18n.language
+
+  const isLanguageActive = (language: string) => currentLanguage.startsWith(language)
 
   useEffect(() => {
     if (!isOpen) return
@@ -90,26 +92,38 @@ export default function MobileMenu({ isOpen, onClose, onLanguageChange }: Mobile
         <div className={styles.languageSwitcher}>
           <button
             type="button"
-            aria-pressed={isEnglish}
+            aria-pressed={isLanguageActive('en')}
             onClick={() => {
               onLanguageChange('en')
               onClose()
             }}
-            className={`${styles.langButton} ${isEnglish ? styles.active : ''}`}
+            className={`${styles.langButton} ${isLanguageActive('en') ? styles.active : ''}`}
           >
             ENG
           </button>
           <span className={styles.separator}>/</span>
           <button
             type="button"
-            aria-pressed={!isEnglish}
+            aria-pressed={isLanguageActive('ru')}
             onClick={() => {
               onLanguageChange('ru')
               onClose()
             }}
-            className={`${styles.langButton} ${!isEnglish ? styles.active : ''}`}
+            className={`${styles.langButton} ${isLanguageActive('ru') ? styles.active : ''}`}
           >
             РУС
+          </button>
+          <span className={styles.separator}>/</span>
+          <button
+            type="button"
+            aria-pressed={isLanguageActive('ua')}
+            onClick={() => {
+              onLanguageChange('ua')
+              onClose()
+            }}
+            className={`${styles.langButton} ${isLanguageActive('ua') ? styles.active : ''}`}
+          >
+            УКР
           </button>
         </div>
       </div>
