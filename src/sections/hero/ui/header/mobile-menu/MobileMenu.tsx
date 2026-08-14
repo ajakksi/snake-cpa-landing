@@ -10,9 +10,15 @@ type MobileMenuProps = {
   isOpen: boolean
   onClose: () => void
   onLanguageChange: (language: 'en' | 'ru') => void
+  homePath?: string
 }
 
-export default function MobileMenu({ isOpen, onClose, onLanguageChange }: MobileMenuProps) {
+export default function MobileMenu({
+  isOpen,
+  onClose,
+  onLanguageChange,
+  homePath = '',
+}: MobileMenuProps) {
   const { t, i18n } = useTranslation('hero')
   const isEnglish = i18n.language.startsWith('en')
 
@@ -43,16 +49,16 @@ export default function MobileMenu({ isOpen, onClose, onLanguageChange }: Mobile
         </header>
 
         <nav className={styles.nav}>
-          <a href="#hero" className={styles.link} onClick={onClose}>
+          <a href={`${homePath}#hero`} className={styles.link} onClick={onClose}>
             {t('nav.hero') || 'MAIN'}
           </a>
-          <a href="#team" className={styles.link} onClick={onClose}>
+          <a href={`${homePath}#team`} className={styles.link} onClick={onClose}>
             {t('nav.team')}
           </a>
-          <a href="#benefits" className={styles.link} onClick={onClose}>
+          <a href={`${homePath}#benefits`} className={styles.link} onClick={onClose}>
             {t('nav.benefits')}
           </a>
-          <a href="#join-us" className={styles.link} onClick={onClose}>
+          <a href={`${homePath}#join-us`} className={styles.link} onClick={onClose}>
             {t('nav.joinUs')}
           </a>
         </nav>
