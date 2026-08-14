@@ -25,6 +25,8 @@ export default function JoinUs({ onJoinClick }: JoinUsProps) {
     data = [],
     error,
     isPending,
+    isFetching,
+    refetch,
   } = useQuery({
     queryKey: ['multiply', locale],
     queryFn: () => getMultiply(locale),
@@ -84,7 +86,17 @@ export default function JoinUs({ onJoinClick }: JoinUsProps) {
               className="relative z-20 flex min-h-[360px] w-full min-w-0 flex-col items-center justify-center rounded-xl bg-purple px-6 py-8 text-center md:min-h-[410px] md:px-8 lg:h-[490px]"
             >
               {error ? (
-                <p className="text-[18px] font-medium">{getApiErrorMessage(error)}</p>
+                <div className="flex flex-col items-center gap-5">
+                  <p className="text-[18px] font-medium">{getApiErrorMessage(error)}</p>
+                  <Button3D
+                    type="button"
+                    className="min-h-[58px] min-w-[230px]"
+                    disabled={isFetching}
+                    onClick={() => void refetch()}
+                  >
+                    {t('retry', { ns: 'common' })}
+                  </Button3D>
+                </div>
               ) : isPending ? (
                 <p className="text-[18px] font-medium">{t('loading', { ns: 'common' })}</p>
               ) : (

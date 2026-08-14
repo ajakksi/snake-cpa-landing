@@ -4,13 +4,14 @@ import { getBenefits } from '@api/endpoints/benefits'
 import { getApiErrorMessage } from '@api/errors'
 import snakeBenefits from '@assets/images/snake-benefits.png'
 import { SectionWrapper } from '@components/layout'
+import { Button } from '@components/ui'
 import { useLocale } from '@hooks/useLocale'
 import DreamBigMarquee from './DreamBigMarquee/DreamBigMarquee'
 
 export default function MultiBenefits() {
   const { t } = useTranslation('common')
   const locale = useLocale()
-  const { data, error, isPending } = useQuery({
+  const { data, error, isPending, isFetching, refetch } = useQuery({
     queryKey: ['benefits', locale],
     queryFn: () => getBenefits(locale),
   })
@@ -27,6 +28,16 @@ export default function MultiBenefits() {
             <p className="mt-5 w-full max-w-[590px] text-[17px] font-medium leading-[1.16] md:mt-5 md:text-[20px] md:leading-[1.2] xl:w-[75%]">
               {error ? getApiErrorMessage(error) : isPending ? t('loading') : data?.description}
             </p>
+            {error ? (
+              <Button
+                type="button"
+                className="mt-5"
+                disabled={isFetching}
+                onClick={() => void refetch()}
+              >
+                {t('retry')}
+              </Button>
+            ) : null}
           </div>
 
           <div className="relative left-1/2 mt-8 w-screen -translate-x-1/2 xl:hidden">

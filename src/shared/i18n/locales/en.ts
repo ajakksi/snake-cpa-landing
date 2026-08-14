@@ -2,6 +2,7 @@ export const en = {
   common: {
     submit: 'Submit',
     done: 'Done',
+    retry: 'Try again',
     loading: 'Loading…',
     footer: {
       socialsLabel: 'Social media',

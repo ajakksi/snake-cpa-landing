@@ -2,6 +2,7 @@ export const ru = {
   common: {
     submit: 'Отправить',
     done: 'Готово',
+    retry: 'Попробовать снова',
     loading: 'Загрузка…',
     footer: {
       socialsLabel: 'Социальные сети',

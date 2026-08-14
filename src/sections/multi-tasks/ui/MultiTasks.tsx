@@ -3,6 +3,7 @@ import { getTasks } from '@api/endpoints/tasks'
 import { getApiErrorMessage } from '@api/errors'
 import snakeTasks from '@assets/images/snake-tasks.png'
 import { SectionWrapper } from '@components/layout'
+import { Button } from '@components/ui'
 import { useLocale } from '@hooks/useLocale'
 import { useTranslation } from 'react-i18next'
 import { highlightPhrases } from '../config/highlightPhrases'
@@ -10,7 +11,7 @@ import { highlightPhrases } from '../config/highlightPhrases'
 export default function MultiTasks() {
   const { t } = useTranslation('common')
   const locale = useLocale()
-  const { data, error, isPending } = useQuery({
+  const { data, error, isPending, isFetching, refetch } = useQuery({
     queryKey: ['tasks', locale],
     queryFn: () => getTasks(locale),
   })
@@ -38,6 +39,16 @@ export default function MultiTasks() {
                         ),
                       )}
               </p>
+              {error ? (
+                <Button
+                  type="button"
+                  className="mx-2.5 mt-4 self-start md:mx-[38px]"
+                  disabled={isFetching}
+                  onClick={() => void refetch()}
+                >
+                  {t('retry')}
+                </Button>
+              ) : null}
               <img
                 className="pointer-events-none select-none w-full flex-1 object-cover"
                 src={snakeTasks}
