@@ -9,6 +9,14 @@ import { JoinUs } from '@sections/join-us'
 import { MultiBenefits } from '@sections/multi-benefits'
 import { MultiTasks } from '@sections/multi-tasks'
 import { usePreloaderReady } from '@hooks/usePreloaderReady'
+import { useAnimationManager } from '@hooks/useAnimationManager'
+
+const SECTIONS = [
+  { id: 'hero', hasExitAnimation: true },
+  { id: 'team' },
+  { id: 'benefits' },
+  { id: 'join-us' },
+]
 
 function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -17,35 +25,61 @@ function Home() {
   const closeModal = useCallback(() => setIsModalOpen(false), [])
   const isReady = usePreloaderReady()
 
-  const handleActiveSectionChange = useCallback((sectionId: string) => {
-    setIsDarkBackground(sectionId === 'team')
-  }, [])
+  const { triggers, handlePreloaderComplete, handleActiveSectionChange, handleSectionTransitionStart } =
+    useAnimationManager(SECTIONS, isReady)
 
-  const handleSectionTransitionStart = useCallback((fromSectionId: string, toSectionId: string) => {
-    if (toSectionId === 'team') {
-      setIsDarkBackground(true)
-    } else if (fromSectionId === 'team') {
-      setIsDarkBackground(false)
-    }
-  }, [])
+  const handleActiveSectionChangeWithBackground = useCallback(
+    (sectionId: string) => {
+      setIsDarkBackground(sectionId === 'team')
+      handleActiveSectionChange(sectionId)
+    },
+    [handleActiveSectionChange],
+  )
+
+  const handleSectionTransitionStartWithBackground = useCallback(
+    (fromSectionId: string, toSectionId: string) => {
+      if (toSectionId === 'team') {
+        setIsDarkBackground(true)
+      } else if (fromSectionId === 'team') {
+        setIsDarkBackground(false)
+      }
+      handleSectionTransitionStart(fromSectionId, toSectionId)
+    },
+    [handleSectionTransitionStart],
+  )
 
   return (
     <>
-      <Preloader isReady={isReady} />
+      <Preloader isReady={isReady} onComplete={handlePreloaderComplete} />
       {isReady && <PageBackground variant={isDarkBackground ? 'dark' : 'main'} />}
       <FullPageScroll
         enabled={isReady}
         suspended={isModalOpen}
-        onActiveSectionChange={handleActiveSectionChange}
-        onSectionTransitionStart={handleSectionTransitionStart}
+        onActiveSectionChange={handleActiveSectionChangeWithBackground}
+        onSectionTransitionStart={handleSectionTransitionStartWithBackground}
       />
 
       <div className="relative z-10">
         <main>
-          <Hero onJoinClick={openModal} />
-          <MultiTasks />
-          <MultiBenefits />
-          <JoinUs onJoinClick={openModal} />
+          <Hero
+            onJoinClick={openModal}
+            playTrigger={triggers.hero.playTrigger}
+            resetTrigger={triggers.hero.resetTrigger}
+            exitTrigger={triggers.hero.exitTrigger ?? 0}
+          />
+          <MultiTasks
+            playTrigger={triggers.team.playTrigger}
+            resetTrigger={triggers.team.resetTrigger}
+          />
+          <MultiBenefits
+            playTrigger={triggers.benefits.playTrigger}
+            resetTrigger={triggers.benefits.resetTrigger}
+          />
+          <JoinUs
+            onJoinClick={openModal}
+            playTrigger={triggers['join-us'].playTrigger}
+            resetTrigger={triggers['join-us'].resetTrigger}
+          />
         </main>
 
         <Footer />
