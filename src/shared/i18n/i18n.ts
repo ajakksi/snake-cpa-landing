@@ -2,12 +2,14 @@ import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import { en } from './locales/en'
 import { ru } from './locales/ru'
+import { ua } from './locales/ua'
 
 export const defaultNS = 'common'
 
 export const resources = {
   en,
   ru,
+  ua,
 } as const
 
 export type SupportedLocale = keyof typeof resources
