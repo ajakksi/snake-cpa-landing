@@ -13,6 +13,9 @@ const gradientClasses: Record<PageBackgroundVariant, string> = {
   dark: 'bg-gradient-tasks',
 }
 
+const MOBILE_PROPS = { 'data-mobile': true } as const
+const EMPTY_PROPS = {} as const
+
 function PageBackground({
   variant = 'main',
   className = '',
@@ -20,7 +23,11 @@ function PageBackground({
 }: PageBackgroundProps) {
   const isMobile = useIsMobile()
 
-  const bgClass = isMobile ? 'bg-mobile-bg' : gradientClasses.main
+  const bgClass = isMobile ? styles.backgroundMobile : gradientClasses.main
+  const mobileProps = isMobile ? MOBILE_PROPS : EMPTY_PROPS
+  const maskLayerClassName = !isMobile
+    ? `${styles.maskLayer} ${gradientClasses.main}`
+    : styles.maskLayer
 
   return (
     <div
@@ -28,8 +35,8 @@ function PageBackground({
       aria-hidden="true"
       {...backgroundProps}
     >
-      {!isMobile && <div className={styles.gridLayer} />}
-      {!isMobile && <div className={`${styles.maskLayer} ${gradientClasses.main}`} />}
+      <div className={styles.gridLayer} {...mobileProps} />
+      <div className={maskLayerClassName} {...mobileProps} />
 
       <div
         className={`${styles.darkVariant} ${
