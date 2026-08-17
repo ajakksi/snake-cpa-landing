@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { getBenefits } from '@api/endpoints/benefits'
@@ -5,9 +6,20 @@ import { getApiErrorMessage } from '@api/errors'
 import snakeBenefits from '@assets/images/snake-benefits.png'
 import { SectionWrapper } from '@components/layout'
 import { useLocale } from '@hooks/useLocale'
+import { useMultiBenefitsAnimation } from '../hooks/useMultiBenefitsAnimation'
 import DreamBigMarquee from './DreamBigMarquee/DreamBigMarquee'
 
-export default function MultiBenefits() {
+// Подстраховка на первый рендер (до JS). На мобилке (<1024px) не применяется.
+// Значения должны совпадать с TEXT_OFFSET_X / RIGHT_OFFSET_X в benefitsAnimation.ts.
+const TEXT_HIDDEN_CLASS = 'lg:opacity-0 lg:-translate-x-[70px]'
+const RIGHT_HIDDEN_CLASS = 'lg:opacity-0 lg:translate-x-[90px]'
+
+type MultiBenefitsProps = {
+  playTrigger: number
+  resetTrigger: number
+}
+
+export default function MultiBenefits({ playTrigger, resetTrigger }: MultiBenefitsProps) {
   const { t } = useTranslation('common')
   const locale = useLocale()
   const { data, error, isPending } = useQuery({
@@ -15,11 +27,20 @@ export default function MultiBenefits() {
     queryFn: () => getBenefits(locale),
   })
 
+  const textBlockRef = useRef<HTMLDivElement>(null)
+  const imageRef = useRef<HTMLImageElement>(null)
+  const listRef = useRef<HTMLUListElement>(null)
+
+  useMultiBenefitsAnimation(
+    { textBlockRef, imageRef, listRef },
+    { playTrigger, resetTrigger, isPending },
+  )
+
   return (
     <SectionWrapper id="benefits" eyebrow="Multi-benefits" className="relative text-white">
       <div className="flex h-full min-h-0 flex-col">
         <div className="container relative flex flex-1 flex-col pb-12 pt-16 md:pb-6 md:pt-12 xl:flex-row">
-          <div className="relative z-10 max-w-[650px]">
+          <div ref={textBlockRef} className={`relative z-10 max-w-[650px] ${TEXT_HIDDEN_CLASS}`}>
             <h3 className="text-[32px] font-bold leading-[0.9] md:text-[46px] md:leading-[1.08] lg:text-[50px] lg:leading-[50px]">
               {isPending ? t('loading') : data?.title}
             </h3>
@@ -34,13 +55,17 @@ export default function MultiBenefits() {
           </div>
 
           <img
-            className="pointer-events-none absolute z-[1] hidden select-none lg:bottom-0 lg:right-[620px] lg:block lg:w-[314px] xl:left-[31%] xl:top-[min(25.556vh,230px)] xl:h-[min(27.083vw,390px)] xl:w-[min(27.083vw,390px)]"
+            ref={imageRef}
+            className={`pointer-events-none absolute z-[1] hidden select-none lg:bottom-0 lg:right-[620px] lg:block lg:w-[314px] xl:left-[31%] xl:top-[min(25.556vh,230px)] xl:h-[min(27.083vw,390px)] xl:w-[min(27.083vw,390px)] ${RIGHT_HIDDEN_CLASS}`}
             src={snakeBenefits}
             alt=""
             aria-hidden="true"
           />
 
-          <ul className="relative z-10 mt-12 flex w-full flex-col gap-5 md:ml-auto md:max-w-[570px] xl:mt-[min(19.556vh,176px)] xl:w-[42%] xl:gap-4">
+          <ul
+            ref={listRef}
+            className={`relative z-10 mt-12 flex w-full flex-col gap-5 md:ml-auto md:max-w-[570px] xl:mt-[min(19.556vh,176px)] xl:w-[42%] xl:gap-4 ${RIGHT_HIDDEN_CLASS}`}
+          >
             {!isPending &&
               data?.benefits.map((benefit) => (
                 <li
