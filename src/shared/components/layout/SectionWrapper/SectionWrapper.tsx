@@ -26,7 +26,7 @@ function SectionWrapper({
     .join(' ')
 
   const containerClasses = [
-    'fullpage-scrollbar flex lg:min-h-dvh w-full flex-col pt-[20px] pb-8 md:pt-[3vh] lg:h-dvh lg:min-h-0 lg:overflow-y-auto lg:overscroll-contain',
+    'fullpage-scrollbar flex min-h-dvh w-full flex-col pt-[20px] pb-8 md:pt-[3vh] lg:h-dvh lg:min-h-0 lg:overflow-y-auto lg:overscroll-contain',
     contentClassName,
   ]
     .filter(Boolean)

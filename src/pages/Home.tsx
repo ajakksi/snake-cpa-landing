@@ -9,6 +9,7 @@ import { JoinUs } from '@sections/join-us'
 import { MultiBenefits } from '@sections/multi-benefits'
 import { MultiTasks } from '@sections/multi-tasks'
 import { usePreloaderReady } from '@hooks/usePreloaderReady'
+import { useIsMobile } from '@hooks/useDeviceType'
 import { useAnimationManager } from '@hooks/useAnimationManager'
 
 const SECTIONS = [
@@ -21,33 +22,35 @@ const SECTIONS = [
 function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isDarkBackground, setIsDarkBackground] = useState(false)
+  const isMobile = useIsMobile()
   const openModal = useCallback(() => setIsModalOpen(true), [])
   const closeModal = useCallback(() => setIsModalOpen(false), [])
   const isReady = usePreloaderReady()
 
-  const { triggers, handlePreloaderComplete, handleActiveSectionChange, handleSectionTransitionStart } =
+const { triggers, handlePreloaderComplete, handleActiveSectionChange, handleSectionTransitionStart } =
     useAnimationManager(SECTIONS, isReady)
 
   const handleActiveSectionChangeWithBackground = useCallback(
     (sectionId: string) => {
-      setIsDarkBackground(sectionId === 'team')
+      setIsDarkBackground(!isMobile && sectionId === 'team')
       handleActiveSectionChange(sectionId)
     },
-    [handleActiveSectionChange],
+    [handleActiveSectionChange, isMobile],
   )
 
   const handleSectionTransitionStartWithBackground = useCallback(
     (fromSectionId: string, toSectionId: string) => {
-      if (toSectionId === 'team') {
-        setIsDarkBackground(true)
-      } else if (fromSectionId === 'team') {
-        setIsDarkBackground(false)
+      if (!isMobile) {
+        if (toSectionId === 'team') {
+          setIsDarkBackground(true)
+        } else if (fromSectionId === 'team') {
+          setIsDarkBackground(false)
+        }
       }
       handleSectionTransitionStart(fromSectionId, toSectionId)
     },
-    [handleSectionTransitionStart],
+    [handleSectionTransitionStart, isMobile],
   )
-
   return (
     <>
       <Preloader isReady={isReady} onComplete={handlePreloaderComplete} />

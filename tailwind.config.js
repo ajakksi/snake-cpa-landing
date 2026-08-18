@@ -12,6 +12,7 @@ export default {
         yellow: 'rgb(var(--color-yellow) / <alpha-value>)',
         white: 'rgb(var(--color-white) / <alpha-value>)',
         ink: 'rgb(var(--color-ink) / <alpha-value>)',
+        'mobile-bg': 'rgb(var(--color-mobile-bg) / <alpha-value>)',
       },
       fontFamily: {
         sans: 'var(--font-main)',

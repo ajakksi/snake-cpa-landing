@@ -8,8 +8,7 @@ import snakeHero from '@assets/images/snake-hero.png'
 import Header from './header/Header'
 import SocialLinks from './social-links/SocialLinks'
 
-// Подстраховка на самый первый рендер (до того как отработает JS) — на мобилке
-// (<1024px) не применяется, там анимации нет и контент виден сразу.
+
 const HIDDEN_CLASS = 'lg:opacity-0 lg:-translate-x-[70px]'
 
 type HeroProps = {
@@ -37,7 +36,7 @@ export default function Hero({ onJoinClick, playTrigger, resetTrigger, exitTrigg
       <div className="container relative flex h-full min-h-0 flex-col">
         <Header />
 
-        <div className="relative z-10 max-w-[758px]">
+<div className="relative z-10 max-w-[758px] pt-[110px] md:pt-0">
           <h1
             ref={titleRef}
             className={`text-[38px] md:text-[80px] font-bold leading-[0.9] tracking-[-0.83px] md:tracking-[-1.74px] text-white mb-3 md:mb-[12px] uppercase ${HIDDEN_CLASS}`}
