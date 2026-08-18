@@ -9,6 +9,12 @@ export const en = {
       backToTop: 'Back to top',
     },
   },
+  notFound: {
+    errorLabel: 'Error 404',
+    homeLabel: 'Go to the home page',
+    desktopCta: 'Oops, take me back',
+    mobileCta: 'Take me back',
+  },
   hero: {
     title: {
       word1: 'Practice',

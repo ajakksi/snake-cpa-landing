@@ -9,6 +9,12 @@ export const ru = {
       backToTop: 'Наверх',
     },
   },
+  notFound: {
+    errorLabel: 'Ошибка 404',
+    homeLabel: 'Перейти на главную страницу',
+    desktopCta: 'Упс, вернуться назад',
+    mobileCta: 'Вернуться назад',
+  },
   hero: {
     title: {
       word1: 'Practice',
