@@ -2,11 +2,18 @@ export const ru = {
   common: {
     submit: 'Отправить',
     done: 'Готово',
+    retry: 'Попробовать снова',
     loading: 'Загрузка…',
     footer: {
       socialsLabel: 'Социальные сети',
       backToTop: 'Наверх',
     },
+  },
+  notFound: {
+    errorLabel: 'Ошибка 404',
+    homeLabel: 'Перейти на главную страницу',
+    desktopCta: 'Упс, вернуться назад',
+    mobileCta: 'Вернуться назад',
   },
   hero: {
     title: {
