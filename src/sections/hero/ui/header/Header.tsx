@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 import snakeLogo from '@assets/icons/logo.svg'
+import { useLocale } from '@hooks/useLocale'
 import styles from './Header.module.scss'
 import MobileMenu from './mobile-menu/MobileMenu'
 
@@ -10,7 +11,7 @@ export default function Header() {
   const { t, i18n } = useTranslation('hero')
   const location = useLocation()
   const navigate = useNavigate()
-  const currentLanguage = i18n.resolvedLanguage ?? i18n.language
+  const locale = useLocale()
 
   const changeLanguage = (language: 'en' | 'ru' | 'ua') => {
     void i18n.changeLanguage(language)
@@ -21,7 +22,7 @@ export default function Header() {
     })
   }
 
-  const isLanguageActive = (language: string) => currentLanguage.startsWith(language)
+  const isLanguageActive = (language: 'en' | 'ru' | 'ua') => locale === language
 
   return (
     <header className={styles.header}>

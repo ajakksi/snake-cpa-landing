@@ -5,6 +5,7 @@ import styles from './MobileMenu.module.scss'
 import InstagramIcon from '@assets/icons/instagram.svg?react'
 import TelegramIcon from '@assets/icons/telegram.svg?react'
 import LinkedinIcon from '@assets/icons/linkedin.svg?react'
+import { useLocale } from '@hooks/useLocale'
 
 type MobileMenuProps = {
   isOpen: boolean
@@ -19,10 +20,10 @@ export default function MobileMenu({
   onLanguageChange,
   homePath = '',
 }: MobileMenuProps) {
-  const { t, i18n } = useTranslation('hero')
-  const currentLanguage = i18n.resolvedLanguage ?? i18n.language
+  const { t } = useTranslation('hero')
+  const locale = useLocale()
 
-  const isLanguageActive = (language: string) => currentLanguage.startsWith(language)
+  const isLanguageActive = (language: 'en' | 'ru' | 'ua') => locale === language
 
   useEffect(() => {
     if (!isOpen) return
