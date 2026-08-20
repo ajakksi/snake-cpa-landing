@@ -10,12 +10,11 @@ const MarqueeItem = () => (
 export default function DreamBigMarquee() {
   return (
     <div className="z-20 w-full overflow-hidden py-2 md:py-4">
-      <div
-        className="w-full scale-[1.02] rotate-1 overflow-hidden border-y-2 border-yellow py-1 text-yellow md:py-3"
-        aria-label="Dream big earn bigger!"
-      >
+      <span className="sr-only">Dream big earn bigger!</span>
+      <div className="w-full scale-[1.02] rotate-1 overflow-hidden border-y-2 border-yellow py-1 text-yellow md:py-3">
         <div
           className={`${styles.marqueeTrack} flex w-max whitespace-nowrap text-[38px] font-light uppercase leading-none md:text-[64px]`}
+          aria-hidden="true"
         >
           <div className="flex shrink-0">
             <MarqueeItem />

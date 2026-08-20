@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getTasks } from '@api/endpoints/tasks'
-import { getApiErrorMessage } from '@api/errors'
+import { getApiErrorMessage, isRetryableApiError } from '@api/errors'
 import snakeTasks from '@assets/images/snake-tasks.png'
 import { SectionWrapper } from '@components/layout'
 import { Button } from '@components/ui'
@@ -33,10 +33,7 @@ export default function MultiTasks({ playTrigger, resetTrigger }: MultiTasksProp
   const col2Ref = useRef<HTMLDivElement>(null)
   const col3Ref = useRef<HTMLDivElement>(null)
 
-  useMultiTasksAnimation(
-    { col1Ref, col2Ref, col3Ref },
-    { playTrigger, resetTrigger, isPending },
-  )
+  useMultiTasksAnimation({ col1Ref, col2Ref, col3Ref }, { playTrigger, resetTrigger, isPending })
 
   return (
     <SectionWrapper id="team" eyebrow="Multi-tasks" className="relative text-white">
@@ -48,23 +45,25 @@ export default function MultiTasks({ playTrigger, resetTrigger }: MultiTasksProp
               ref={col1Ref}
               className={`flex flex-col rounded-[16px] md:rounded-[8px] bg-gradient-card overflow-hidden ${COL1_HIDDEN_CLASS}`}
             >
-              <p className="w-full px-2.5 text-left text-[20px] font-bold leading-[1.2] md:px-[38px] md:pt-[50px] pt-5 flex-shrink-0">
-                {error
-                  ? getApiErrorMessage(error)
-                  : isPending
-                    ? t('loading')
-                    : data?.description.split(highlightPhrases[locale]).map((part, index) =>
-                        index === 0 ? (
-                          part
-                        ) : (
-                          <span key={index}>
-                            <span className="text-yellow">{highlightPhrases[locale]}</span>
-                            {part}
-                          </span>
-                        ),
-                      )}
-              </p>
-              {error ? (
+              {error || isPending || data?.description ? (
+                <p className="w-full px-2.5 text-left text-[20px] font-bold leading-[1.2] md:px-[38px] md:pt-[50px] pt-5 flex-shrink-0">
+                  {error
+                    ? getApiErrorMessage(error)
+                    : isPending
+                      ? t('loading')
+                      : data?.description?.split(highlightPhrases[locale]).map((part, index) =>
+                          index === 0 ? (
+                            part
+                          ) : (
+                            <span key={index}>
+                              <span className="text-yellow">{highlightPhrases[locale]}</span>
+                              {part}
+                            </span>
+                          ),
+                        )}
+                </p>
+              ) : null}
+              {error && isRetryableApiError(error) ? (
                 <Button
                   type="button"
                   className="mx-2.5 mt-4 self-start md:mx-[38px]"
@@ -83,10 +82,7 @@ export default function MultiTasks({ playTrigger, resetTrigger }: MultiTasksProp
             </div>
 
             {/* Column 2: 2 big cards */}
-            <div
-              ref={col2Ref}
-              className={`flex flex-col gap-5 md:gap-6 ${COL_RIGHT_HIDDEN_CLASS}`}
-            >
+            <div ref={col2Ref} className={`flex flex-col gap-5 md:gap-6 ${COL_RIGHT_HIDDEN_CLASS}`}>
               {!isPending &&
                 data?.tiles.slice(0, 2).map((tile, index) => (
                   <div
@@ -104,10 +100,7 @@ export default function MultiTasks({ playTrigger, resetTrigger }: MultiTasksProp
             </div>
 
             {/* Column 3: 3 small cards */}
-            <div
-              ref={col3Ref}
-              className={`flex flex-col gap-5 md:gap-6 ${COL_RIGHT_HIDDEN_CLASS}`}
-            >
+            <div ref={col3Ref} className={`flex flex-col gap-5 md:gap-6 ${COL_RIGHT_HIDDEN_CLASS}`}>
               {!isPending &&
                 data?.tiles.slice(2, 5).map((tile, index) => (
                   <div

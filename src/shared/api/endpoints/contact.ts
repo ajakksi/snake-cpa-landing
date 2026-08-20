@@ -1,6 +1,11 @@
 import client from '../client'
+import { parseApiResponse } from '../parseResponse'
 
-import type { ContactFormRequest, ContactFormResponse } from '@app-types/api'
+import {
+  contactFormResponseSchema,
+  type ContactFormRequest,
+  type ContactFormResponse,
+} from '@app-types/api'
 import type { ContactFormValues } from '@validation/contactFormSchema'
 
 const normalizeContactMethod = (
@@ -22,6 +27,6 @@ const normalizeContactFormData = (data: ContactFormValues): ContactFormRequest =
 
 export const submitContactForm = async (data: ContactFormValues): Promise<ContactFormResponse> => {
   const payload = normalizeContactFormData(data)
-  const response = await client.post<ContactFormResponse>('/form', payload)
-  return response.data
+  const response = await client.post<unknown>('/form', payload)
+  return parseApiResponse(contactFormResponseSchema, response.data)
 }
