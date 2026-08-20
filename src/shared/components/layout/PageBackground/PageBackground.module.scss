@@ -1,3 +1,11 @@
+/* Z-index stacking context */
+:root {
+  --z-background: 0;
+  --z-mask: 1;
+  --z-dark-variant: 2;
+}
+
+/* Animated properties */
 @property --light-x {
   syntax: '<percentage>';
   inherits: false;
@@ -16,6 +24,19 @@
   initial-value: 0.8;
 }
 
+/* Mask radius values */
+@property --light-radius-x {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 240px;
+}
+
+@property --light-radius-y {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 150px;
+}
+
 .background,
 .darkVariant,
 .gridLayer,
@@ -28,12 +49,16 @@
 }
 
 .background {
-  z-index: 0;
+  z-index: var(--z-background);
   overflow: hidden;
 }
 
+.backgroundMobile {
+  background-color: rgb(var(--color-mobile-bg));
+}
+
 .darkVariant {
-  z-index: 2;
+  z-index: var(--z-dark-variant);
   overflow: hidden;
   opacity: 0;
   transition: opacity 280ms ease-out 200ms;
@@ -45,7 +70,7 @@
 }
 
 .gridLayer {
-  z-index: 0;
+  z-index: var(--z-background);
   background: url('../../../../assets/images/bg-grid.svg') 20% center / cover no-repeat;
 }
 
@@ -53,20 +78,27 @@
   --light-radius-x: clamp(180px, 20.417vw, 294px);
   --light-radius-y: clamp(112.5px, 12.743vw, 183.5px);
 
-  z-index: 1;
+  z-index: var(--z-mask);
+  will-change: --light-x, --light-y, --light-opacity;
+  animation: flashlight 10s ease-in-out infinite alternate;
   mask-image: radial-gradient(
     ellipse var(--light-radius-x) var(--light-radius-y) at var(--light-x) var(--light-y),
     rgb(0 0 0 / var(--light-opacity)) 38%,
     black 100%
   );
   mask-composite: exclude;
-  animation: flashlight 10s ease-in-out infinite alternate;
+  /* Fallback for webkit browsers */
   -webkit-mask-image: radial-gradient(
     ellipse var(--light-radius-x) var(--light-radius-y) at var(--light-x) var(--light-y),
     rgb(0 0 0 / var(--light-opacity)) 38%,
     black 100%
   );
   -webkit-mask-composite: destination-out;
+}
+
+/* Мобильные стили */
+.maskLayer[data-mobile] {
+  background: rgb(var(--color-mobile-bg));
 }
 
 @keyframes flashlight {
@@ -89,12 +121,6 @@
   }
 }
 
-@media (max-width: 768px) {
-  .gridLayer {
-    background-position: 70% center;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .darkVariant {
     transition: none;
@@ -102,5 +128,6 @@
 
   .maskLayer {
     animation: none;
+    will-change: auto;
   }
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { getMultiply } from '@api/endpoints/multiply'
@@ -10,12 +10,18 @@ import { Button3D } from '@components/ui'
 import { useLocale } from '@hooks/useLocale'
 import { tabKeys } from '../data/tabKeys'
 import { resolveTabKey } from '../utils/resolveTabKey'
+import { useJoinUsAnimation } from '../hooks/useJoinUsAnimation'
+
+// Подстраховка на первый рендер (до JS). На мобилке (<1024px) не применяется.
+const HIDDEN_CLASS = 'lg:opacity-0'
 
 type JoinUsProps = {
   onJoinClick: () => void
+  playTrigger: number
+  resetTrigger: number
 }
 
-export default function JoinUs({ onJoinClick }: JoinUsProps) {
+export default function JoinUs({ onJoinClick, playTrigger, resetTrigger }: JoinUsProps) {
   const { t } = useTranslation(['joinUs', 'common'])
   const locale = useLocale()
   const [activeTab, setActiveTab] = useState(0)
@@ -30,6 +36,11 @@ export default function JoinUs({ onJoinClick }: JoinUsProps) {
     queryFn: () => getMultiply(locale),
   })
 
+  const tabsRef = useRef<HTMLDivElement>(null)
+  const panelRef = useRef<HTMLDivElement>(null)
+
+  useJoinUsAnimation({ tabsRef, panelRef }, { playTrigger, resetTrigger, isPending })
+
   // Keep the selected index valid if the API response changes.
   const safeActiveTab = activeTab < data.length || data.length === 0 ? activeTab : 0
   const activeItem = data[safeActiveTab]
@@ -41,7 +52,8 @@ export default function JoinUs({ onJoinClick }: JoinUsProps) {
           <div className="relative grid flex-1 content-between gap-8 pb-[50px] md:pb-[100px] lg:grid-cols-[minmax(400px,0.9fr)_minmax(0,1.3fr)] lg:items-start lg:gap-12 lg:pb-16 xl:grid-cols-[520px_minmax(0,720px)] xl:justify-between xl:gap-14">
             {/* Tab controls */}
             <div
-              className="relative z-20 flex flex-col items-center gap-4 lg:items-stretch"
+              ref={tabsRef}
+              className={`relative z-20 flex flex-col items-center gap-4 lg:items-stretch ${HIDDEN_CLASS}`}
               role="tablist"
               aria-label={t('tabsLabel')}
               aria-orientation="vertical"
@@ -78,10 +90,11 @@ export default function JoinUs({ onJoinClick }: JoinUsProps) {
 
             {/* Active tab content */}
             <div
+              ref={panelRef}
               id="join-us-panel"
               role="tabpanel"
               aria-labelledby={`join-us-tab-${safeActiveTab}`}
-              className="relative z-20 flex min-h-[360px] w-full min-w-0 flex-col items-center justify-center rounded-xl bg-purple px-6 py-8 text-center md:min-h-[410px] md:px-8 lg:h-[490px]"
+              className={`relative z-20 flex min-h-[360px] w-full min-w-0 flex-col items-center justify-center rounded-xl bg-purple px-6 py-8 text-center md:min-h-[410px] md:px-8 lg:h-[490px] ${HIDDEN_CLASS}`}
             >
               {error ? (
                 <p className="text-[18px] font-medium">{getApiErrorMessage(error)}</p>
@@ -114,7 +127,8 @@ export default function JoinUs({ onJoinClick }: JoinUsProps) {
             </div>
           </div>
 
-          {/* Anchored to the section container so tab content cannot shift it. */}
+          {/* Anchored to the section container so tab content cannot shift it.
+              Не анимируется — статична, как и на видео. */}
           <img
             src={snakeWithUs}
             alt=""
