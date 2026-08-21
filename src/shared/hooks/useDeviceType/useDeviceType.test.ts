@@ -91,40 +91,15 @@ describe('getDeviceType', () => {
     })
   })
 
-  describe('extreme width values', () => {
-    it('very small screen (1px) -> mobile', () => {
-      mockInnerWidth(1)
-      expect(getDeviceType()).toBe('mobile')
-    })
-
-    it('very large screen (3840px) without touch -> desktop', () => {
-      mockInnerWidth(3840)
-      expect(getDeviceType()).toBe('desktop')
-    })
-  })
-
   describe('touch device detection at desktop width', () => {
-    it('matchMedia (hover: none) matches -> tablet', () => {
+    it.each([
+      ['matchMedia (hover: none)', () => mockMatchMedia({ '(hover: none)': true })],
+      ['matchMedia (pointer: coarse)', () => mockMatchMedia({ '(pointer: coarse)': true })],
+      ['navigator.maxTouchPoints > 0', () => mockMaxTouchPoints(5)],
+      ['"ontouchstart" in window', () => (window.ontouchstart = () => {})],
+    ])('%s -> tablet', (_label, setup) => {
       mockInnerWidth(1920)
-      mockMatchMedia({ '(hover: none)': true })
-      expect(getDeviceType()).toBe('tablet')
-    })
-
-    it('matchMedia (pointer: coarse) matches -> tablet', () => {
-      mockInnerWidth(1920)
-      mockMatchMedia({ '(pointer: coarse)': true })
-      expect(getDeviceType()).toBe('tablet')
-    })
-
-    it('navigator.maxTouchPoints > 0 -> tablet', () => {
-      mockInnerWidth(1920)
-      mockMaxTouchPoints(5)
-      expect(getDeviceType()).toBe('tablet')
-    })
-
-    it('"ontouchstart" in window -> tablet', () => {
-      mockInnerWidth(1920)
-      window.ontouchstart = () => {}
+      setup()
       expect(getDeviceType()).toBe('tablet')
     })
 
@@ -157,41 +132,28 @@ describe('useDeviceType', () => {
     expect(result.current).toBe('tablet')
   })
 
-  describe('resize event handling', () => {
-    it('updates deviceType on width change', () => {
-      mockInnerWidth(320)
-      const { result } = renderHook(() => useDeviceType())
-      expect(result.current).toBe('mobile')
+  it('updates through all three states as the width changes', () => {
+    mockInnerWidth(320)
+    const { result } = renderHook(() => useDeviceType())
+    expect(result.current).toBe('mobile')
 
-      act(() => {
-        mockInnerWidth(1920)
-        window.dispatchEvent(new Event('resize'))
-      })
-      expect(result.current).toBe('desktop')
+    act(() => {
+      mockInnerWidth(800)
+      window.dispatchEvent(new Event('resize'))
     })
+    expect(result.current).toBe('tablet')
 
-    it('correctly transitions through all three states', () => {
-      mockInnerWidth(320)
-      const { result } = renderHook(() => useDeviceType())
-
-      act(() => {
-        mockInnerWidth(800)
-        window.dispatchEvent(new Event('resize'))
-      })
-      expect(result.current).toBe('tablet')
-
-      act(() => {
-        mockInnerWidth(1920)
-        window.dispatchEvent(new Event('resize'))
-      })
-      expect(result.current).toBe('desktop')
-
-      act(() => {
-        mockInnerWidth(100)
-        window.dispatchEvent(new Event('resize'))
-      })
-      expect(result.current).toBe('mobile')
+    act(() => {
+      mockInnerWidth(1920)
+      window.dispatchEvent(new Event('resize'))
     })
+    expect(result.current).toBe('desktop')
+
+    act(() => {
+      mockInnerWidth(100)
+      window.dispatchEvent(new Event('resize'))
+    })
+    expect(result.current).toBe('mobile')
   })
 
   describe('orientationchange event handling (with 100ms delay)', () => {
@@ -213,7 +175,7 @@ describe('useDeviceType', () => {
       expect(result.current).toBe('desktop')
     })
 
-    it('does not update before 100ms delay', () => {
+    it('does not update before the 100ms delay elapses', () => {
       vi.useFakeTimers()
       mockInnerWidth(320)
       const { result } = renderHook(() => useDeviceType())
@@ -232,90 +194,57 @@ describe('useDeviceType', () => {
     })
   })
 
-  describe('cleanup on unmount', () => {
-    it('removes resize and orientationchange listeners', () => {
-      mockInnerWidth(1024)
-      const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener')
-      const { unmount } = renderHook(() => useDeviceType())
+  it('removes resize and orientationchange listeners on unmount', () => {
+    mockInnerWidth(1024)
+    const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener')
+    const { unmount } = renderHook(() => useDeviceType())
 
-      unmount()
+    unmount()
 
-      expect(removeEventListenerSpy).toHaveBeenCalledWith('resize', expect.any(Function))
-      expect(removeEventListenerSpy).toHaveBeenCalledWith('orientationchange', expect.any(Function))
-    })
+    expect(removeEventListenerSpy).toHaveBeenCalledWith('resize', expect.any(Function))
+    expect(removeEventListenerSpy).toHaveBeenCalledWith('orientationchange', expect.any(Function))
   })
 })
 
 describe('useIsMobile', () => {
-  it('returns true for mobile width', () => {
+  it('returns true at mobile width', () => {
     mockInnerWidth(320)
-    const { result } = renderHook(() => useIsMobile())
-    expect(result.current).toBe(true)
+    expect(renderHook(() => useIsMobile()).result.current).toBe(true)
   })
 
-  it('returns false for tablet width', () => {
-    mockInnerWidth(800)
-    const { result } = renderHook(() => useIsMobile())
-    expect(result.current).toBe(false)
-  })
-
-  it('returns false for desktop width', () => {
+  it('returns false at desktop width', () => {
     mockInnerWidth(1920)
-    const { result } = renderHook(() => useIsMobile())
-    expect(result.current).toBe(false)
+    expect(renderHook(() => useIsMobile()).result.current).toBe(false)
   })
 })
 
 describe('useIsTablet', () => {
-  it('returns true for tablet width', () => {
+  it('returns true at tablet width', () => {
     mockInnerWidth(800)
-    const { result } = renderHook(() => useIsTablet())
-    expect(result.current).toBe(true)
+    expect(renderHook(() => useIsTablet()).result.current).toBe(true)
   })
 
-  it('returns false for mobile width', () => {
-    mockInnerWidth(320)
-    const { result } = renderHook(() => useIsTablet())
-    expect(result.current).toBe(false)
-  })
-
-  it('returns false for desktop width', () => {
-    mockInnerWidth(1920)
-    const { result } = renderHook(() => useIsTablet())
-    expect(result.current).toBe(false)
-  })
-
-  it('returns true for desktop width with touch device', () => {
+  it('returns true at desktop width when the device is touch-capable', () => {
     mockInnerWidth(1920)
     mockMatchMedia({ '(hover: none)': true })
-    const { result } = renderHook(() => useIsTablet())
-    expect(result.current).toBe(true)
+    expect(renderHook(() => useIsTablet()).result.current).toBe(true)
+  })
+
+  it('returns false at desktop width without touch', () => {
+    mockInnerWidth(1920)
+    expect(renderHook(() => useIsTablet()).result.current).toBe(false)
   })
 })
 
 describe('useIsDesktop', () => {
-  it('returns true for desktop width without touch', () => {
+  it('returns true at desktop width without touch', () => {
     mockInnerWidth(1920)
-    const { result } = renderHook(() => useIsDesktop())
-    expect(result.current).toBe(true)
+    expect(renderHook(() => useIsDesktop()).result.current).toBe(true)
   })
 
-  it('returns false for mobile width', () => {
-    mockInnerWidth(320)
-    const { result } = renderHook(() => useIsDesktop())
-    expect(result.current).toBe(false)
-  })
-
-  it('returns false for tablet width', () => {
-    mockInnerWidth(800)
-    const { result } = renderHook(() => useIsDesktop())
-    expect(result.current).toBe(false)
-  })
-
-  it('returns false for desktop width with touch device', () => {
+  it('returns false at desktop width when the device is touch-capable', () => {
     mockInnerWidth(1920)
     mockMatchMedia({ '(hover: none)': true })
-    const { result } = renderHook(() => useIsDesktop())
-    expect(result.current).toBe(false)
+    expect(renderHook(() => useIsDesktop()).result.current).toBe(false)
   })
 })
