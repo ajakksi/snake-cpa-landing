@@ -1,5 +1,5 @@
-import axios, { type AxiosRequestConfig } from 'axios'
-import { ApiError } from './errors/errors'
+import axios from 'axios'
+import { ApiError } from './endpoints/errors'
 
 const apiUrl = import.meta.env.VITE_API_URL
 const apiKey = import.meta.env.VITE_API_KEY
@@ -21,36 +21,14 @@ client.interceptors.request.use((config) => {
   return config
 })
 
-interface RetryableConfig extends AxiosRequestConfig {
-  retryCount?: number
-}
-
-const MAX_RETRIES = 3
-const RETRY_DELAY_MS = 1000
-
 client.interceptors.response.use(
   (response) => response,
-  async (error: unknown) => {
+  (error: unknown) => {
     if (!axios.isAxiosError(error)) {
       throw new ApiError(error instanceof Error ? error.message : 'Unknown error', 0, false, false)
     }
 
-    const apiError = ApiError.fromAxiosError(error)
-    const config = error.config as RetryableConfig | undefined
-
-    if (!apiError.isNetworkError || !config) {
-      throw apiError
-    }
-
-    const retryCount = config.retryCount ?? 0
-    if (retryCount >= MAX_RETRIES) {
-      throw apiError
-    }
-
-    config.retryCount = retryCount + 1
-    await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS))
-
-    return client(config)
+    throw ApiError.fromAxiosError(error)
   },
 )
 

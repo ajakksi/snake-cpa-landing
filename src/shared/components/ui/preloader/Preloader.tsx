@@ -47,15 +47,6 @@ export default function Preloader({ isReady, onComplete }: PreloaderProps) {
     prevIsReadyRef.current = isReady
   }, [isReady, isVisible])
 
-  // Только overflow: hidden, БЕЗ компенсации paddingRight под ширину скроллбара.
-  // FullPageScroll на десктопе тоже держит overflow: hidden без всякой
-  // компенсации (там нативного скроллбара в принципе не бывает — секции
-  // на весь экран, скролл полностью программный). Если тут добавлять
-  // paddingRight, а потом убирать его в момент, когда прелоадер исчезает
-  // (а FullPageScroll к этому моменту уже сам держит свой лок без паддинга),
-  // контент резко "распрямляется" на ширину скроллбара — тот самый прыжок
-  // вправо. Держим оба лока в одном и том же стиле, чтобы переход был
-  // бесшовным.
   useEffect(() => {
     if (isVisible) {
       document.body.style.overflow = 'hidden'
