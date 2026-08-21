@@ -5,17 +5,14 @@ import snake404 from '@assets/images/snake-hero.png'
 import snakeLogo from '@assets/icons/logo.svg'
 import { PageBackground } from '@components/layout'
 import { Button3DLink } from '@components/ui'
+import { useLocale } from '@hooks/useLocale'
 import MobileMenu from '@sections/hero/ui/header/mobile-menu/MobileMenu'
 
 function NotFound() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const { t, i18n } = useTranslation('notFound')
-  const currentLanguage = i18n.resolvedLanguage ?? i18n.language
-  const homePath = currentLanguage.startsWith('ru')
-    ? '/ru'
-    : currentLanguage.startsWith('ua')
-      ? '/ua'
-      : '/'
+  const locale = useLocale()
+  const homePath = locale === 'en' ? '/' : `/${locale}`
 
   const changeLanguage = (language: 'en' | 'ru' | 'ua') => {
     void i18n.changeLanguage(language)

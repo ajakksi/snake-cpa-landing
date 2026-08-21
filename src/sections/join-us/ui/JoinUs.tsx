@@ -1,8 +1,8 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, type KeyboardEvent } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { getMultiply } from '@api/endpoints/multiply'
-import { getApiErrorMessage } from '@api/endpoints/errors'
+import { getApiErrorMessage, isRetryableApiError } from '@api/endpoints/errors'
 import ArrowIcon from '@assets/icons/arrow.svg?react'
 import snakeWithUs from '@assets/images/snake-with-us.png'
 import { SectionWrapper } from '@components/layout'
@@ -39,6 +39,7 @@ export default function JoinUs({ onJoinClick, playTrigger, resetTrigger }: JoinU
   })
 
   const tabsRef = useRef<HTMLDivElement>(null)
+  const tabButtonRefs = useRef<Array<HTMLButtonElement | null>>([])
   const panelRef = useRef<HTMLDivElement>(null)
 
   useJoinUsAnimation({ tabsRef, panelRef }, { playTrigger, resetTrigger, isPending })
@@ -46,6 +47,34 @@ export default function JoinUs({ onJoinClick, playTrigger, resetTrigger }: JoinU
   // Keep the selected index valid if the API response changes.
   const safeActiveTab = activeTab < data.length || data.length === 0 ? activeTab : 0
   const activeItem = data[safeActiveTab]
+  const tabItems = data.length ? data : tabKeys
+
+  const handleTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    let nextIndex: number
+
+    switch (event.key) {
+      case 'ArrowDown':
+      case 'ArrowRight':
+        nextIndex = (index + 1) % tabItems.length
+        break
+      case 'ArrowUp':
+      case 'ArrowLeft':
+        nextIndex = (index - 1 + tabItems.length) % tabItems.length
+        break
+      case 'Home':
+        nextIndex = 0
+        break
+      case 'End':
+        nextIndex = tabItems.length - 1
+        break
+      default:
+        return
+    }
+
+    event.preventDefault()
+    setActiveTab(nextIndex)
+    tabButtonRefs.current[nextIndex]?.focus()
+  }
 
   return (
     <SectionWrapper id="join-us" eyebrow="MULTIPLY WITH US" className="relative text-white">
@@ -60,13 +89,16 @@ export default function JoinUs({ onJoinClick, playTrigger, resetTrigger }: JoinU
               aria-label={t('tabsLabel')}
               aria-orientation="vertical"
             >
-              {(data.length ? data : tabKeys).map((item, index) => {
+              {tabItems.map((item, index) => {
                 const apiTitle = typeof item === 'string' ? item : item.title
                 const tabKey = resolveTabKey(apiTitle)
                 const isActive = index === safeActiveTab
 
                 return (
                   <button
+                    ref={(element) => {
+                      tabButtonRefs.current[index] = element
+                    }}
                     key={tabKey ?? apiTitle}
                     id={`join-us-tab-${index}`}
                     type="button"
@@ -75,6 +107,7 @@ export default function JoinUs({ onJoinClick, playTrigger, resetTrigger }: JoinU
                     aria-controls="join-us-panel"
                     tabIndex={isActive ? 0 : -1}
                     onClick={() => setActiveTab(index)}
+                    onKeyDown={(event) => handleTabKeyDown(event, index)}
                     className={`flex min-h-14 items-center justify-between gap-6 md:gap-12 lg:gap-2 rounded-full border-2 px-6 text-left text-[20px] font-bold transition-[width,color,background-color,border-color] duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-yellow md:min-h-16 md:px-8 md:text-2xl ${
                       isActive
                         ? 'w-auto border-ink bg-yellow text-ink lg:w-full'
@@ -101,14 +134,16 @@ export default function JoinUs({ onJoinClick, playTrigger, resetTrigger }: JoinU
               {error ? (
                 <div className="flex flex-col items-center gap-5">
                   <p className="text-[18px] font-medium">{getApiErrorMessage(error)}</p>
-                  <Button3D
-                    type="button"
-                    className="min-h-[58px] min-w-[230px]"
-                    disabled={isFetching}
-                    onClick={() => void refetch()}
-                  >
-                    {t('retry', { ns: 'common' })}
-                  </Button3D>
+                  {isRetryableApiError(error) ? (
+                    <Button3D
+                      type="button"
+                      className="min-h-[58px] min-w-[230px]"
+                      disabled={isFetching}
+                      onClick={() => void refetch()}
+                    >
+                      {t('retry', { ns: 'common' })}
+                    </Button3D>
+                  ) : null}
                 </div>
               ) : isPending ? (
                 <p className="text-[18px] font-medium">{t('loading', { ns: 'common' })}</p>
