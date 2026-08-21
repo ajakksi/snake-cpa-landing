@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { getBenefits } from '@api/endpoints/benefits'
-import { getApiErrorMessage } from '@api/errors'
+import { getApiErrorMessage, isRetryableApiError } from '@api/errors'
 import snakeBenefits from '@assets/images/snake-benefits.png'
 import { SectionWrapper } from '@components/layout'
 import { Button } from '@components/ui'
@@ -42,14 +42,18 @@ export default function MultiBenefits({ playTrigger, resetTrigger }: MultiBenefi
       <div className="flex h-full min-h-0 flex-col">
         <div className="container relative flex flex-1 flex-col pb-12 pt-16 md:pb-6 md:pt-12 xl:flex-row">
           <div ref={textBlockRef} className={`relative z-10 max-w-[650px] ${TEXT_HIDDEN_CLASS}`}>
-            <h3 className="text-[32px] font-bold leading-[0.9] md:text-[46px] md:leading-[1.08] lg:text-[50px] lg:leading-[50px]">
-              {isPending ? t('loading') : data?.title}
-            </h3>
+            {isPending || data?.title ? (
+              <h3 className="text-[32px] font-bold leading-[0.9] md:text-[46px] md:leading-[1.08] lg:text-[50px] lg:leading-[50px]">
+                {isPending ? t('loading') : data?.title}
+              </h3>
+            ) : null}
 
-            <p className="mt-5 w-full max-w-[590px] text-[17px] font-medium leading-[1.16] md:mt-5 md:text-[20px] md:leading-[1.2] xl:w-[75%]">
-              {error ? getApiErrorMessage(error) : isPending ? t('loading') : data?.description}
-            </p>
-            {error ? (
+            {error || isPending || data?.description ? (
+              <p className="mt-5 w-full max-w-[590px] text-[17px] font-medium leading-[1.16] md:mt-5 md:text-[20px] md:leading-[1.2] xl:w-[75%]">
+                {error ? getApiErrorMessage(error) : isPending ? t('loading') : data?.description}
+              </p>
+            ) : null}
+            {error && isRetryableApiError(error) ? (
               <Button
                 type="button"
                 className="mt-5"

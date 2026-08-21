@@ -8,6 +8,12 @@ export const ua = {
       backToTop: 'Вверх',
     },
   },
+  notFound: {
+    errorLabel: 'Помилка 404',
+    homeLabel: 'Перейти на головну сторінку',
+    desktopCta: 'Упс, повернутися назад',
+    mobileCta: 'Повернутися назад',
+  },
   hero: {
     title: {
       word1: 'Practice',
