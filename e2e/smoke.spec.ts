@@ -2,10 +2,10 @@ import { expect, test } from './fixtures/test'
 import { apiResponses, type ApiLocale } from './mocks/apiResponses'
 import { HomePage } from './pages/HomePage'
 
-for (const { path, locale } of [
-  { path: '/', locale: 'en' },
-  { path: '/ru', locale: 'ru' },
-  { path: '/ua', locale: 'ua' },
+for (const { path, locale, htmlLang } of [
+  { path: '/', locale: 'en', htmlLang: 'en' },
+  { path: '/ru', locale: 'ru', htmlLang: 'ru' },
+  { path: '/ua', locale: 'ua', htmlLang: 'uk' },
 ]) {
   test(`loads the ${locale} landing page with mocked API content`, async ({ page }) => {
     const response = apiResponses[locale as ApiLocale]
@@ -19,7 +19,7 @@ for (const { path, locale } of [
     const home = new HomePage(page)
     await home.goto(path)
 
-    await expect(page.locator('html')).toHaveAttribute('lang', locale)
+    await expect(page.locator('html')).toHaveAttribute('lang', htmlLang)
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Practice')
     await expect(page.getByText(response.tasks.description)).toBeAttached()
     await expect(page.getByText(response.benefits.title)).toBeAttached()
