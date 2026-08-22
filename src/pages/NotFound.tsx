@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import snake404 from '@assets/images/snake-hero.png'
+import snake404 from '@assets/images/snake-hero.avif'
 import snakeLogo from '@assets/icons/logo.svg'
 import { PageBackground } from '@components/layout'
 import { Button3DLink } from '@components/ui'
@@ -16,7 +16,7 @@ function NotFound() {
 
   const changeLanguage = (language: 'en' | 'ru' | 'ua') => {
     void i18n.changeLanguage(language)
-    document.documentElement.lang = language
+    document.documentElement.lang = language === 'ua' ? 'uk' : language
   }
 
   return (

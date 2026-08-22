@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { getMultiply } from '@api/endpoints/multiply'
 import { getApiErrorMessage, isRetryableApiError } from '@api/errors'
 import ArrowIcon from '@assets/icons/arrow.svg?react'
-import snakeWithUs from '@assets/images/snake-with-us.png'
+import snakeWithUs from '@assets/images/snake-with-us.avif'
 import { SectionWrapper } from '@components/layout'
 import { Button3D } from '@components/ui'
 import { useLocale } from '@hooks/useLocale'
@@ -179,6 +179,8 @@ export default function JoinUs({ onJoinClick, playTrigger, resetTrigger }: JoinU
           <img
             src={snakeWithUs}
             alt=""
+            loading="lazy"
+            decoding="async"
             aria-hidden="true"
             className="hidden lg:block pointer-events-none absolute -bottom-4 -left-0 z-10 w-[430px] max-w-none select-none md:-bottom-8 md:-left-0 md:w-[480px] lg:w-[600px]"
           />

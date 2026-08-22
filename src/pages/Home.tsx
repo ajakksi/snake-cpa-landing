@@ -1,6 +1,5 @@
-import { useCallback, useState } from 'react'
+import { lazy, Suspense, useCallback, useState } from 'react'
 import LogoIcon from '@assets/icons/logo.svg?react'
-import { ContactForm } from '@components/common'
 import { Footer, FullPageScroll, PageBackground } from '@components/layout'
 import { Modal } from '@components/ui'
 import Preloader from '@components/ui/preloader/Preloader'
@@ -11,6 +10,10 @@ import { MultiTasks } from '@sections/multi-tasks'
 import { usePreloaderReady } from '@hooks/usePreloaderReady'
 import { useIsMobile } from '@hooks/useDeviceType'
 import { useAnimationManager } from '@hooks/useAnimationManager'
+
+const ContactForm = lazy(() =>
+  import('@components/common').then(({ ContactForm }) => ({ default: ContactForm })),
+)
 
 const SECTIONS = [
   { id: 'hero', hasExitAnimation: true },
@@ -26,9 +29,12 @@ function Home() {
   const openModal = useCallback(() => setIsModalOpen(true), [])
   const closeModal = useCallback(() => setIsModalOpen(false), [])
   const isReady = usePreloaderReady()
-
-const { triggers, handlePreloaderComplete, handleActiveSectionChange, handleSectionTransitionStart } =
-    useAnimationManager(SECTIONS, isReady)
+  const {
+    triggers,
+    handlePreloaderComplete,
+    handleActiveSectionChange,
+    handleSectionTransitionStart,
+  } = useAnimationManager(SECTIONS, isReady)
 
   const handleActiveSectionChangeWithBackground = useCallback(
     (sectionId: string) => {
@@ -93,7 +99,13 @@ const { triggers, handlePreloaderComplete, handleActiveSectionChange, handleSect
           aria-hidden="true"
           className="mx-auto h-16 w-[70px] [&_ellipse]:fill-purple [&_path]:fill-purple"
         />
-        <ContactForm onDone={closeModal} />
+        <Suspense
+          fallback={
+            <div className="min-h-[20rem]" role="status" aria-label="Loading contact form" />
+          }
+        >
+          <ContactForm onDone={closeModal} />
+        </Suspense>
       </Modal>
     </>
   )

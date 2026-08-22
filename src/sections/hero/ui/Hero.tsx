@@ -4,10 +4,9 @@ import { Button3D } from '@components/ui'
 import { useTranslation } from 'react-i18next'
 import { useHeroAnimation } from '../hooks/useHeroAnimation'
 import AnimatedWord from './AnimatedWord'
-import snakeHero from '@assets/images/snake-hero.png'
+import snakeHero from '@assets/images/snake-hero.avif'
 import Header from './header/Header'
 import SocialLinks from './social-links/SocialLinks'
-
 
 const HIDDEN_CLASS = 'lg:opacity-0 lg:-translate-x-[70px]'
 
@@ -36,7 +35,7 @@ export default function Hero({ onJoinClick, playTrigger, resetTrigger, exitTrigg
       <div className="container relative flex h-full min-h-0 flex-col">
         <Header />
 
-<div className="relative z-10 max-w-[758px] pt-[110px] md:pt-0">
+        <div className="relative z-10 max-w-[758px] pt-[110px] md:pt-0">
           <h1
             ref={titleRef}
             className={`text-[38px] md:text-[80px] font-bold leading-[0.9] tracking-[-0.83px] md:tracking-[-1.74px] text-white mb-3 md:mb-[12px] uppercase ${HIDDEN_CLASS}`}
@@ -70,6 +69,9 @@ export default function Hero({ onJoinClick, playTrigger, resetTrigger, exitTrigg
           className="pointer-events-none absolute z-[1] hidden select-none lg:block lg:w-auto lg:max-h-[calc(100vh-105px)] lg:top-[min(105px,10vh)] lg:right-0 lg:object-contain"
           src={snakeHero}
           alt=""
+          width="872"
+          height="794"
+          fetchPriority="high"
           aria-hidden="true"
         />
       </div>
@@ -78,6 +80,9 @@ export default function Hero({ onJoinClick, playTrigger, resetTrigger, exitTrigg
         <img
           src={snakeHero}
           alt=""
+          width="872"
+          height="794"
+          fetchPriority="high"
           aria-hidden="true"
           className="w-[435px] h-[448px] object-contain"
         />
