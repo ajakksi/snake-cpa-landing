@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { submitContactForm } from '@api/endpoints/contact'
-import { getApiErrorMessage } from '@api/endpoints/errors'
+import { getApiErrorMessage } from '@api/errors'
 import { Button, Input, Select } from '@components/ui'
 import { useTranslation } from 'react-i18next'
 import {

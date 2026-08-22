@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { queryClient } from './queryClient'
-import { ApiError } from '@api/endpoints/errors'
+import { ApiError } from '@api/errors'
 
 const options = queryClient.getDefaultOptions().queries!
 const retry = options.retry as (failureCount: number, error: unknown) => boolean
@@ -8,10 +8,13 @@ const retryDelay = options.retryDelay as (attemptIndex: number) => number
 const { staleTime, retryOnMount, refetchOnWindowFocus } = options
 
 describe('queryClient — retry', () => {
-  it.each([0, 1, 2])('should retry a retryable error on attempt %i (below the 3-attempt cap)', (failureCount) => {
-    const networkError = new ApiError('Network', 0, false, true)
-    expect(retry(failureCount, networkError)).toBe(true)
-  })
+  it.each([0, 1, 2])(
+    'should retry a retryable error on attempt %i (below the 3-attempt cap)',
+    (failureCount) => {
+      const networkError = new ApiError('Network', 0, false, true)
+      expect(retry(failureCount, networkError)).toBe(true)
+    },
+  )
 
   it('should stop retrying once the failure count reaches the cap (3)', () => {
     const networkError = new ApiError('Network', 0, false, true)
@@ -32,9 +35,12 @@ describe('queryClient — retryDelay', () => {
     [2, 4000],
     [3, 8000],
     [4, 8000],
-  ])('should back off exponentially, capped at 8s (attempt %i -> %ims)', (attemptIndex, expected) => {
-    expect(retryDelay(attemptIndex)).toBe(expected)
-  })
+  ])(
+    'should back off exponentially, capped at 8s (attempt %i -> %ims)',
+    (attemptIndex, expected) => {
+      expect(retryDelay(attemptIndex)).toBe(expected)
+    },
+  )
 })
 
 describe('queryClient — other defaults', () => {

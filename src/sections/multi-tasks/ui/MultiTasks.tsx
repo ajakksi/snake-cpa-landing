@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getTasks } from '@api/endpoints/tasks'
-import { getApiErrorMessage, isRetryableApiError } from '@api/endpoints/errors'
+import { getApiErrorMessage, isRetryableApiError } from '@api/errors'
 import snakeTasks from '@assets/images/snake-tasks.png'
 import { SectionWrapper } from '@components/layout'
 import { Button } from '@components/ui'

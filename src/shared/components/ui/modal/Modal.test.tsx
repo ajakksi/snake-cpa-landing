@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Modal from './Modal'
 
@@ -24,14 +24,15 @@ describe('Modal', () => {
     expect(screen.getByText('Modal content')).toBeInTheDocument()
   })
 
-  it('should render as a dialog with aria-modal attribute', () => {
+  it('should open the native dialog when isOpen is true', () => {
     render(
       <Modal isOpen={true} onClose={vi.fn()}>
         Content
       </Modal>,
     )
 
-    expect(screen.getByRole('dialog')).toHaveAttribute('aria-modal', 'true')
+    expect(screen.getByRole('dialog')).toBeInstanceOf(HTMLDialogElement)
+    expect(screen.getByRole('dialog')).toHaveAttribute('open')
   })
 
   it('should set aria-label from the title prop', () => {
@@ -44,9 +45,8 @@ describe('Modal', () => {
     expect(screen.getByRole('dialog', { name: 'Custom Title' })).toBeInTheDocument()
   })
 
-  it('should call onClose when Escape key is pressed', async () => {
+  it('should call onClose when the native dialog emits a cancel event', () => {
     const handleClose = vi.fn()
-    const user = userEvent.setup()
 
     render(
       <Modal isOpen={true} onClose={handleClose}>
@@ -54,13 +54,12 @@ describe('Modal', () => {
       </Modal>,
     )
 
-    await user.keyboard('{Escape}')
+    fireEvent(screen.getByRole('dialog'), new Event('cancel', { cancelable: true }))
     expect(handleClose).toHaveBeenCalledTimes(1)
   })
 
-  it('should not call onClose on Escape once the modal has closed (listener is cleaned up)', async () => {
+  it('should close the native dialog when isOpen becomes false', () => {
     const handleClose = vi.fn()
-    const user = userEvent.setup()
 
     const { rerender } = render(
       <Modal isOpen={true} onClose={handleClose}>
@@ -74,7 +73,7 @@ describe('Modal', () => {
       </Modal>,
     )
 
-    await user.keyboard('{Escape}')
+    expect(screen.getByRole('dialog', { hidden: true })).not.toHaveAttribute('open')
     expect(handleClose).not.toHaveBeenCalled()
   })
 
@@ -128,13 +127,13 @@ describe('Modal', () => {
     expect(handleClose).toHaveBeenCalledTimes(1)
   })
 
-  it('should accept a custom className on the dialog', () => {
+  it('should apply a custom className to the modal panel', () => {
     render(
       <Modal isOpen={true} onClose={vi.fn()} className="custom-class">
         Content
       </Modal>,
     )
 
-    expect(screen.getByRole('dialog')).toHaveClass('custom-class')
+    expect(document.body.querySelector('.custom-class')).toBeInTheDocument()
   })
 })

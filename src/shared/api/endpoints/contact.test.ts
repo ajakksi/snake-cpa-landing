@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { submitContactForm } from './contact'
-import { ApiError } from '@api/endpoints/errors'
+import { ApiError } from '@api/errors'
 import type { ContactFormValues } from '@validation/contactFormSchema'
 import type { ContactFormResponse } from '@app-types/api'
 
@@ -42,19 +42,25 @@ describe('submitContactForm', () => {
     expect(result).toEqual(mockResponse)
   })
 
-  it.each(['', '   '])('treats an empty or whitespace-only name (%j) as undefined', async (name) => {
-    vi.mocked(mockClient.post).mockResolvedValue({
-      data: { message: 'Success', data: { name: undefined, method: 'whatsapp', contact: '555-1234' } },
-    })
+  it.each(['', '   '])(
+    'treats an empty or whitespace-only name (%j) as undefined',
+    async (name) => {
+      vi.mocked(mockClient.post).mockResolvedValue({
+        data: {
+          message: 'Success',
+          data: { name: undefined, method: 'whatsapp', contact: '555-1234' },
+        },
+      })
 
-    await submitContactForm({ name, method: 'whatsapp', contact: '555-1234' })
+      await submitContactForm({ name, method: 'whatsapp', contact: '555-1234' })
 
-    expect(mockClient.post).toHaveBeenCalledWith('/form', {
-      name: undefined,
-      method: 'whatsapp',
-      contact: '555-1234',
-    })
-  })
+      expect(mockClient.post).toHaveBeenCalledWith('/form', {
+        name: undefined,
+        method: 'whatsapp',
+        contact: '555-1234',
+      })
+    },
+  )
 
   it('throws before calling the API when contact method is missing', async () => {
     const formData: ContactFormValues = { name: 'John', method: '', contact: 'test' }

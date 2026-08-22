@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { ApiError } from './endpoints/errors'
+import { ApiError } from './errors'
 
 const apiUrl = import.meta.env.VITE_API_URL
 const apiKey = import.meta.env.VITE_API_KEY

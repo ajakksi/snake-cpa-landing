@@ -33,7 +33,6 @@ export const isRetryableApiError = (error: unknown): boolean =>
   error instanceof ApiError &&
   (error.isNetworkError || error.isTimeout || (error.statusCode >= 500 && error.statusCode <= 599))
 
-
 export const getApiErrorMessage = (error: unknown): string => {
   if (error instanceof ApiError) {
     if (error.statusCode === 403) {

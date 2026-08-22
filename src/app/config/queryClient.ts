@@ -1,5 +1,5 @@
 import { QueryClient } from '@tanstack/react-query'
-import { isRetryableApiError } from '@api/endpoints/errors'
+import { isRetryableApiError } from '@api/errors'
 
 const FIVE_MINUTES_MS = 5 * 60 * 1000
 const MAX_QUERY_RETRIES = 3

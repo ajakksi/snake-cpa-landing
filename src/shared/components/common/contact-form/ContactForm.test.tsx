@@ -101,7 +101,10 @@ describe('ContactForm (integration)', () => {
       http.post(`${API_URL}/form`, async () => {
         submitCount += 1
         await new Promise((resolve) => setTimeout(resolve, 50))
-        return HttpResponse.json({ message: 'Success', data: {} })
+        return HttpResponse.json({
+          message: 'Success',
+          data: { method: 'email', contact: 'test@example.com' },
+        })
       }),
     )
 
@@ -112,7 +115,7 @@ describe('ContactForm (integration)', () => {
 
     const submitButton = screen.getByRole('button', { name: /submit/i })
     await user.click(submitButton)
-    await user.click(submitButton) 
+    await user.click(submitButton)
 
     await waitFor(() => {
       expect(screen.getByText('Thank you!')).toBeInTheDocument()
