@@ -3,6 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=24 <25"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -10,7 +13,13 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "prepare": "husky",
-    "test": "vitest"
+    "test": "vitest",
+    "test:unit": "vitest run --config vitest.unit.config.js",
+    "test:integration": "vitest run --config vitest.integration.config.js",
+    "build:e2e": "npm run build -- --mode test",
+    "test:e2e": "npm run build:e2e && playwright test",
+    "test:e2e:ui": "npm run build:e2e && playwright test --ui",
+    "playwright:install": "playwright install chromium"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",
@@ -29,6 +38,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
+    "@playwright/test": "^1.62.1",
     "@testing-library/jest-dom": "^7.0.0",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.3",

@@ -4,6 +4,14 @@ A responsive CPA landing page built with React, TypeScript, and Vite. The applic
 
 ## Getting started
 
+The project uses Node.js 24 LTS (`>=24 <25`). With nvm, activate it before installing
+dependencies:
+
+```bash
+nvm install 24
+nvm use 24
+```
+
 Install dependencies:
 
 1. Create a `.env` file based on `.env.example` and add the API key provided by the team.
@@ -26,6 +34,32 @@ npm run dev
 - `npm run type-check` — run TypeScript checks
 - `npm run lint` — run ESLint
 - `npm run preview` — preview the production build
+
+## End-to-end tests
+
+Tests are split into three levels:
+
+- `npm run test:unit` runs unit and isolated component tests;
+- `npm run test:integration` runs files named `*.integration.test.*`;
+- `npm run test:e2e` runs Playwright tests after building the production bundle.
+
+The CI pipeline runs these levels sequentially and stops before the next, more expensive level if
+an earlier level fails.
+
+Install Chromium once after installing project dependencies:
+
+```bash
+npm run playwright:install
+```
+
+Run the end-to-end tests with `npm run test:e2e`. Use `npm run test:e2e:ui` while developing and
+debugging tests in Playwright UI Mode.
+
+Playwright builds the application in `test` mode, which loads `.env.test`, and serves the
+production bundle on `http://127.0.0.1:4173`. The shared fixture in `e2e/fixtures` intercepts REST
+API requests, so tests do not require the external API or a real API key. HTML reports are written
+to `playwright-report`; traces, screenshots, and videos for failed tests are stored in
+`test-results`.
 
 ## Documentation
 
