@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { getBenefits } from '@api/endpoints/benefits'
 import { getApiErrorMessage, isRetryableApiError } from '@api/errors'
-import snakeBenefits from '@assets/images/snake-benefits.png'
+import snakeBenefits from '@assets/images/snake-benefits.avif'
 import { SectionWrapper } from '@components/layout'
 import { Button } from '@components/ui'
 import { useLocale } from '@hooks/useLocale'
@@ -74,6 +74,8 @@ export default function MultiBenefits({ playTrigger, resetTrigger }: MultiBenefi
             className={`pointer-events-none absolute z-[1] hidden select-none lg:bottom-0 lg:right-[620px] lg:block lg:w-[314px] xl:left-[31%] xl:top-[min(25.556vh,230px)] xl:h-[min(27.083vw,390px)] xl:w-[min(27.083vw,390px)] ${RIGHT_HIDDEN_CLASS}`}
             src={snakeBenefits}
             alt=""
+            loading="lazy"
+            decoding="async"
             aria-hidden="true"
           />
 

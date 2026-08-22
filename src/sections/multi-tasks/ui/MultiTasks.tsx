@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getTasks } from '@api/endpoints/tasks'
 import { getApiErrorMessage, isRetryableApiError } from '@api/errors'
-import snakeTasks from '@assets/images/snake-tasks.png'
+import snakeTasks from '@assets/images/snake-tasks.avif'
 import { SectionWrapper } from '@components/layout'
 import { Button } from '@components/ui'
 import { useLocale } from '@hooks/useLocale'
@@ -77,6 +77,8 @@ export default function MultiTasks({ playTrigger, resetTrigger }: MultiTasksProp
                 className="pointer-events-none select-none w-full flex-1 object-cover"
                 src={snakeTasks}
                 alt=""
+                loading="lazy"
+                decoding="async"
                 aria-hidden="true"
               />
             </div>
