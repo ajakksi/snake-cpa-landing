@@ -21,7 +21,10 @@ Section-specific data and utilities remain within their section. Reusable compon
 
 ### Application composition and routing
 
-`main.tsx` installs global styles and i18next, then mounts the global Error Boundary, TanStack Query provider, and React Router. The Error Boundary handles unexpected React rendering and lifecycle failures and lets the user reload the application or return home. API and event-handler errors continue through their dedicated error flows.
+`main.tsx` installs global styles and i18next, then mounts the global Error Boundary,
+`HelmetProvider`, TanStack Query provider, and React Router. The Error Boundary handles unexpected
+React rendering and lifecycle failures and lets the user reload the application or return home.
+API and event-handler errors continue through their dedicated error flows.
 
 `App.tsx` defines these routes:
 
@@ -35,6 +38,17 @@ The application has two pages:
 
 - `Home` — owns the preloader, page background, full-page navigation, section animation triggers, and contact modal;
 - `NotFound` — provides a responsive and localized 404 experience for English, Russian, and Ukrainian.
+
+### SEO and deployment
+
+The shared `Seo` component manages localized titles and descriptions, Open Graph and Twitter
+metadata, canonical URLs, and `hreflang` links for English, Russian, and Ukrainian pages. It also
+adds JSON-LD structured data to supported pages. Not-found pages use `noindex, nofollow` and do not
+expose canonical, alternate, or structured-data entries.
+
+Production builds are deployed to Vercel after the CI pipeline succeeds for a push to `main`.
+Vercel rewrites incoming paths to `index.html`, allowing React Router to resolve direct visits and
+page refreshes for client-side routes such as `/ru` and `/ua`.
 
 ### Data and state
 
