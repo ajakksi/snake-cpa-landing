@@ -26,3 +26,14 @@ html {
     padding-inline: 50px;
   }
 }
+
+@media (min-width: 1024px) {
+  .fullpage-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}

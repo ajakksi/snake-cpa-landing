@@ -2,10 +2,21 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 110px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  padding: 10px 1rem;
+  border-bottom: 1px solid rgba(var(--color-white), 0.1);
+  background-color: rgb(var(--color-mobile-bg));
 
   @media (min-width: 768px) {
+    position: relative;
     margin-bottom: 148px;
+    padding: 0;
+    border-bottom: none;
+    background-color: transparent;
   }
 }
 

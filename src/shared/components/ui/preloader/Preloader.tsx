@@ -6,6 +6,7 @@ import styles from './Preloader.module.scss'
 
 interface PreloaderProps {
   isReady: boolean
+  onComplete?: () => void
 }
 
 const PHASE_1_DURATION = 2.5
@@ -15,7 +16,7 @@ const PHASE_2_DURATION = 45
 const FINAL_RUSH_DURATION = 0.4
 const FADE_OUT_DURATION = 0.6
 
-export default function Preloader({ isReady }: PreloaderProps) {
+export default function Preloader({ isReady, onComplete }: PreloaderProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const percentageRef = useRef<HTMLDivElement>(null)
   const progressBarRef = useRef<HTMLDivElement>(null)
@@ -48,14 +49,9 @@ export default function Preloader({ isReady }: PreloaderProps) {
 
   useEffect(() => {
     if (isVisible) {
-      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
       document.body.style.overflow = 'hidden'
-      if (scrollbarWidth > 0) {
-        document.body.style.paddingRight = `${scrollbarWidth}px`
-      }
       return () => {
         document.body.style.overflow = ''
-        document.body.style.paddingRight = ''
       }
     }
   }, [isVisible])
@@ -147,6 +143,7 @@ export default function Preloader({ isReady }: PreloaderProps) {
 
     if (!containerRef.current) {
       setIsVisible(false)
+      onComplete?.()
       return
     }
 
@@ -161,6 +158,7 @@ export default function Preloader({ isReady }: PreloaderProps) {
       },
       onComplete: () => {
         setIsVisible(false)
+        onComplete?.()
       },
     })
   }

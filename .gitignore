@@ -10,6 +10,10 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+playwright-report
+test-results
+blob-report
+playwright\.cache
 *.local
 
 # Environment variables
@@ -27,3 +31,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+.vercel
+.env*
